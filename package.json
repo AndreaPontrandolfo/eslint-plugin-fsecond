@@ -15,10 +15,12 @@
     "prepublishOnly": "nr build"
   },
   "dependencies": {
+    "@typescript-eslint/parser": "^6.2.0",
     "@typescript-eslint/utils": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
+    "eslint": "^8.46.0",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6",
     "unbuild": "^1.2.1",
