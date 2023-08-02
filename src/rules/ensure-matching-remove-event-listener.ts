@@ -38,15 +38,19 @@ export default createEslintRule<Options, MessageIds>({
           expression.callee.type === "Identifier" &&
           expression.callee.name;
         if (calleeName === "useEffect") {
-          const internalExpressions =
+          const useEffectBodyInternalItems =
             expression &&
             expression.arguments &&
             expression.arguments.length > 0 &&
             expression.arguments[0].type === "ArrowFunctionExpression" &&
             expression.arguments[0].body &&
+            expression.arguments[0].body.type === "BlockStatement" &&
             expression.arguments[0].body.body;
-          if (internalExpressions && internalExpressions.length > 0) {
-            internalExpressions.every((element) => {
+          if (
+            useEffectBodyInternalItems &&
+            useEffectBodyInternalItems.length > 0
+          ) {
+            useEffectBodyInternalItems.every((element) => {
               if (hasRemoveEventListener) {
                 return false;
               }
