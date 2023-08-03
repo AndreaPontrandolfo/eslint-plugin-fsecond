@@ -55,14 +55,25 @@ export default createEslintRule<Options, MessageIds>({
                 return false;
               }
               const elementType = element.type;
+              if (elementType !== "ExpressionStatement") {
+                return true;
+              }
               const internalExpression = element.expression;
-              const internalExpressionCallee =
-                internalExpression && internalExpression.callee;
+              if (internalExpression.type !== "CallExpression") {
+                return true;
+              }
+              const internalExpressionCallee = internalExpression?.callee;
+              if (internalExpressionCallee.type !== "MemberExpression") {
+                return true;
+              }
               const internalExpressionCalleeProperty =
-                internalExpressionCallee &&
-                internalExpressionCallee.property &&
-                internalExpressionCallee.property.name;
-              if (internalExpressionCalleeProperty === "addEventListener") {
+                internalExpressionCallee?.property;
+              if (internalExpressionCalleeProperty.type !== "Identifier") {
+                return true;
+              }
+              const internalExpressionCalleePropertyName =
+                internalExpressionCalleeProperty?.name;
+              if (internalExpressionCalleePropertyName === "addEventListener") {
                 hasAddEventListener = true;
                 return true;
               }
