@@ -1,7 +1,10 @@
 import { createEslintRule } from "../utils";
 
 export const RULE_NAME = "ensure-matching-remove-event-listener";
-export type MessageIds = "required-cleanup" | "required-remove-eventListener";
+export type MessageIds =
+  | "required-cleanup"
+  | "required-remove-eventListener"
+  | "no-conditional-addeventlistener";
 export type Options = [];
 
 export default createEslintRule<Options, MessageIds>({
@@ -19,15 +22,18 @@ export default createEslintRule<Options, MessageIds>({
         "Missing a cleanup function for the addEventListener.",
       "required-remove-eventListener":
         "Missing a matching removeEventListener.",
+      "no-conditional-addeventlistener":
+        "Don't wrap a addEventListener in a condition.",
     },
   },
   defaultOptions: [],
-  create: function (context) {
+  create(context) {
     return {
       ExpressionStatement(node) {
         let hasAddEventListener = null;
         let hasReturnStatement = null;
         let hasRemoveEventListener = null;
+        let hasAddEventListenerInCondition = null;
         const expression = node && node.expression;
         if (expression?.type !== "CallExpression") {
           return;
@@ -51,10 +57,31 @@ export default createEslintRule<Options, MessageIds>({
             useEffectBodyInternalItems.length > 0
           ) {
             useEffectBodyInternalItems.every((element) => {
+              const elementType = element.type;
+              if (elementType === "IfStatement") {
+                element.consequent.type === "BlockStatement" &&
+                  element.consequent.body.forEach((ifStatementBodyElement) => {
+                    const ifStatementExpression =
+                      ifStatementBodyElement.type === "ExpressionStatement" &&
+                      ifStatementBodyElement.expression;
+                    const ifStatementExpressionCalle =
+                      ifStatementExpression.type === "CallExpression" &&
+                      ifStatementExpression.callee;
+                    if (
+                      ifStatementExpressionCalle.type === "MemberExpression" &&
+                      ifStatementExpressionCalle.property.type ===
+                        "Identifier" &&
+                      ifStatementExpressionCalle.property.name ===
+                        "addEventListener"
+                    ) {
+                      hasAddEventListenerInCondition = true;
+                    }
+                    return hasAddEventListenerInCondition;
+                  });
+              }
               if (hasRemoveEventListener) {
                 return false;
               }
-              const elementType = element.type;
               if (elementType === "ExpressionStatement") {
                 const internalExpression = element.expression;
                 if (internalExpression.type !== "CallExpression") {
@@ -116,18 +143,25 @@ export default createEslintRule<Options, MessageIds>({
               return true;
             });
           }
-          if (hasAddEventListener) {
-            if (!hasRemoveEventListener) {
-              if (!hasReturnStatement) {
-                context.report({
-                  node,
-                  messageId: "required-cleanup",
-                });
-              } else {
-                context.report({
-                  node,
-                  messageId: "required-remove-eventListener",
-                });
+          if (hasAddEventListenerInCondition) {
+            context.report({
+              node,
+              messageId: "no-conditional-addeventlistener",
+            });
+          } else {
+            if (hasAddEventListener) {
+              if (!hasRemoveEventListener) {
+                if (!hasReturnStatement) {
+                  context.report({
+                    node,
+                    messageId: "required-cleanup",
+                  });
+                } else {
+                  context.report({
+                    node,
+                    messageId: "required-remove-eventListener",
+                  });
+                }
               }
             }
           }
