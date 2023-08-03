@@ -55,34 +55,37 @@ export default createEslintRule<Options, MessageIds>({
                 return false;
               }
               const elementType = element.type;
-              if (elementType !== "ExpressionStatement") {
-                return true;
-              }
-              const internalExpression = element.expression;
-              if (internalExpression.type !== "CallExpression") {
-                return true;
-              }
-              const internalExpressionCallee = internalExpression?.callee;
-              if (internalExpressionCallee.type !== "MemberExpression") {
-                return true;
-              }
-              const internalExpressionCalleeProperty =
-                internalExpressionCallee?.property;
-              if (internalExpressionCalleeProperty.type !== "Identifier") {
-                return true;
-              }
-              const internalExpressionCalleePropertyName =
-                internalExpressionCalleeProperty?.name;
-              if (internalExpressionCalleePropertyName === "addEventListener") {
-                hasAddEventListener = true;
-                return true;
+              if (elementType === "ExpressionStatement") {
+                const internalExpression = element.expression;
+                if (internalExpression.type !== "CallExpression") {
+                  return true;
+                }
+                const internalExpressionCallee = internalExpression?.callee;
+                if (internalExpressionCallee.type !== "MemberExpression") {
+                  return true;
+                }
+                const internalExpressionCalleeProperty =
+                  internalExpressionCallee?.property;
+                if (internalExpressionCalleeProperty.type !== "Identifier") {
+                  return true;
+                }
+                const internalExpressionCalleePropertyName =
+                  internalExpressionCalleeProperty?.name;
+                if (
+                  internalExpressionCalleePropertyName === "addEventListener"
+                ) {
+                  hasAddEventListener = true;
+                  return true;
+                }
               }
               if (hasAddEventListener) {
                 if (elementType === "ReturnStatement") {
                   hasReturnStatement = true;
                   const returnBlockBody =
                     element.argument &&
+                    element.argument.type === "ArrowFunctionExpression" &&
                     element.argument.body &&
+                    element.argument.body.type === "BlockStatement" &&
                     element.argument.body.body;
                   if (returnBlockBody && returnBlockBody.length > 0) {
                     returnBlockBody.every((returnElement) => {
@@ -90,18 +93,17 @@ export default createEslintRule<Options, MessageIds>({
                         return false;
                       }
                       const returnElementCallee =
+                        returnElement.type === "ExpressionStatement" &&
                         returnElement.expression &&
+                        returnElement.expression.type === "CallExpression" &&
                         returnElement.expression.callee;
-                      const returnElementCalleeObject =
-                        returnElementCallee &&
-                        returnElementCallee.object &&
-                        returnElementCallee.object.name;
                       const returnElementCalleeProperty =
                         returnElementCallee &&
+                        returnElementCallee.type === "MemberExpression" &&
                         returnElementCallee.property &&
+                        returnElementCallee.property.type === "Identifier" &&
                         returnElementCallee.property.name;
                       if (
-                        returnElementCalleeObject === "window" &&
                         returnElementCalleeProperty === "removeEventListener"
                       ) {
                         hasRemoveEventListener = true;
