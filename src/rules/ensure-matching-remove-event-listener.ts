@@ -59,7 +59,7 @@ export default createEslintRule<Options, MessageIds>({
             useEffectBodyInternalItems.every((element) => {
               const elementType = element.type;
               if (elementType === "IfStatement") {
-                element.consequent.type === "BlockStatement" &&
+                if (element.consequent.type === "BlockStatement") {
                   element.consequent.body.forEach((ifStatementBodyElement) => {
                     const ifStatementExpression =
                       ifStatementBodyElement.type === "ExpressionStatement" &&
@@ -78,6 +78,46 @@ export default createEslintRule<Options, MessageIds>({
                     }
                     return hasAddEventListenerInCondition;
                   });
+                }
+                if (element.alternate?.type === "BlockStatement") {
+                  element.alternate.body.forEach(
+                    (ifStatementAlternateBodyElement) => {
+                      const ifStatementAlternateExpression =
+                        ifStatementAlternateBodyElement.type ===
+                          "ExpressionStatement" &&
+                        ifStatementAlternateBodyElement.expression;
+                      const ifStatementAlternateExpressionCalle =
+                        ifStatementAlternateExpression.type ===
+                          "CallExpression" &&
+                        ifStatementAlternateExpression.callee;
+                      if (
+                        ifStatementAlternateExpressionCalle.type ===
+                          "MemberExpression" &&
+                        ifStatementAlternateExpressionCalle.property.type ===
+                          "Identifier" &&
+                        ifStatementAlternateExpressionCalle.property.name ===
+                          "addEventListener"
+                      ) {
+                        hasAddEventListenerInCondition = true;
+                      }
+                      return true;
+                    }
+                  );
+                }
+                if (element.consequent.type === "ExpressionStatement") {
+                  const ifStatementExpression = element.consequent.expression;
+                  if (
+                    ifStatementExpression.type === "CallExpression" &&
+                    ifStatementExpression.callee.type === "MemberExpression" &&
+                    ifStatementExpression.callee.property.type ===
+                      "Identifier" &&
+                    ifStatementExpression.callee.property.name ===
+                      "addEventListener"
+                  ) {
+                    hasAddEventListenerInCondition = true;
+                    return true;
+                  }
+                }
               }
               if (hasRemoveEventListener) {
                 return false;
@@ -95,6 +135,28 @@ export default createEslintRule<Options, MessageIds>({
                     "addEventListener"
                 ) {
                   hasAddEventListenerInCondition = true;
+                  return true;
+                }
+                if (internalExpression.type === "ConditionalExpression") {
+                  if (
+                    (internalExpression.consequent.type === "CallExpression" &&
+                      internalExpression.consequent.callee.type ===
+                        "MemberExpression" &&
+                      internalExpression.consequent.callee.property.type ===
+                        "Identifier" &&
+                      internalExpression.consequent.callee.property.name ===
+                        "addEventListener") ||
+                    (internalExpression.alternate.type === "CallExpression" &&
+                      internalExpression.alternate.callee.type ===
+                        "MemberExpression" &&
+                      internalExpression.alternate.callee.property.type ===
+                        "Identifier" &&
+                      internalExpression.alternate.callee.property.name ===
+                        "addEventListener")
+                  ) {
+                    hasAddEventListenerInCondition = true;
+                    return true;
+                  }
                 }
                 if (internalExpression.type !== "CallExpression") {
                   return true;

@@ -90,10 +90,62 @@ const valids = [
 
 const invalids = [
   {
+    // window.document - inline-if - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+          if (x) window.document.addEventListener("keydown", handleUserKeyPress);
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
+    // window.document - ternary - consequent - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+          x && window.document.addEventListener("keydown", handleUserKeyPress);
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
+    // window.document - ternary - alternate - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+          x ? window.document.addEventListener("keydown", handleUserKeyPress) : x();
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
     // window.document - if - no-conditional-addeventlistener
     code: `useEffect(() => {
           doThis();
           if (x) {
+            window.document.addEventListener("keydown", handleUserKeyPress);
+          }
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
+    // window.document - else - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+          if (x) {
+            x()
+          } else {
             window.document.addEventListener("keydown", handleUserKeyPress);
           }
         }, [])`,
