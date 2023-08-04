@@ -104,6 +104,18 @@ const invalids = [
     ],
   },
   {
+    // window.document - if - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+            x && window.document.addEventListener("keydown", handleUserKeyPress);
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
     // window.document - required-cleanup
     code: `useEffect(() => {
           doThis();
