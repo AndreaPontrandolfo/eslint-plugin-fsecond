@@ -84,6 +84,18 @@ export default createEslintRule<Options, MessageIds>({
               }
               if (elementType === "ExpressionStatement") {
                 const internalExpression = element.expression;
+                if (
+                  internalExpression.type === "LogicalExpression" &&
+                  internalExpression.operator === "&&" &&
+                  internalExpression.right.type === "CallExpression" &&
+                  internalExpression.right.callee.type === "MemberExpression" &&
+                  internalExpression.right.callee.property.type ===
+                    "Identifier" &&
+                  internalExpression.right.callee.property.name ===
+                    "addEventListener"
+                ) {
+                  hasAddEventListenerInCondition = true;
+                }
                 if (internalExpression.type !== "CallExpression") {
                   return true;
                 }

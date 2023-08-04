@@ -104,7 +104,7 @@ const invalids = [
     ],
   },
   {
-    // window.document - if - no-conditional-addeventlistener
+    // window.document - && - no-conditional-addeventlistener
     code: `useEffect(() => {
           doThis();
             x && window.document.addEventListener("keydown", handleUserKeyPress);
@@ -191,6 +191,32 @@ const invalids = [
     ],
   },
   {
+    // document - if - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+          if (x) {
+            document.addEventListener("keydown", handleUserKeyPress);
+          }
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
+    // document - && - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+            x && document.addEventListener("keydown", handleUserKeyPress);
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
     // window - required-cleanup
     code: `useEffect(() => {
         doThis();
@@ -231,6 +257,32 @@ const invalids = [
     ],
   },
   {
+    // window - if - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+          if (x) {
+            window.addEventListener("keydown", handleUserKeyPress);
+          }
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
+    // window - && - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+            x && window.addEventListener("keydown", handleUserKeyPress);
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
     // content - required-cleanup
     code: `useEffect(() => {
         doMoreOfThis();
@@ -264,6 +316,33 @@ const invalids = [
     errors: [
       {
         messageId: "required-remove-eventListener",
+      },
+    ],
+  },
+  {
+    // content - if - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+          const content = window;
+          if (x) {
+            content.addEventListener("keydown", handleUserKeyPress);
+          }
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
+      },
+    ],
+  },
+  {
+    // content - && - no-conditional-addeventlistener
+    code: `useEffect(() => {
+          doThis();
+            x && content.addEventListener("keydown", handleUserKeyPress);
+        }, [])`,
+    errors: [
+      {
+        messageId: "no-conditional-addeventlistener",
       },
     ],
   },
