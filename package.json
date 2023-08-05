@@ -21,6 +21,10 @@
   "devDependencies": {
     "@types/node": "^20.4.2",
     "eslint": "^8.46.0",
+    "eslint-config-sheriff": "^14.2.0",
+    "eslint-define-config": "^1.22.0",
+    "eslint-plugin-eslint-plugin": "^5.1.1",
+    "prettier": "^3.0.1",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6",
     "unbuild": "^1.2.1",

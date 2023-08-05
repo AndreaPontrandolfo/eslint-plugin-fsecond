@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "target": "es2020",
     "module": "es2020",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "strict": true
   },
   "include": ["**/*.ts"]
 }
