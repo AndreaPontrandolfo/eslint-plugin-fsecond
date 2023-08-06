@@ -14,4 +14,10 @@ const sheriffOptions = {
 module.exports = defineFlatConfig([
   ...sheriff(sheriffOptions),
   eslintPluginAll,
+  {
+    rules: {
+      "@typescript-eslint/naming-convention": 0,
+      "@typescript-eslint/no-unnecessary-condition": 0,
+    },
+  },
 ]);
