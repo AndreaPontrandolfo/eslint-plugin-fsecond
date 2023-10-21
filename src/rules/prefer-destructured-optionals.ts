@@ -10,7 +10,7 @@ export default createEslintRule<Options, MessageIds>({
     type: "problem",
     docs: {
       description:
-        "Enforces placing optional parameters on a destructured object instead of the function signature itself",
+        "enforce placing optional parameters on a destructured object instead of the function signature itself",
       recommended: "stylistic",
     },
     schema: [],
@@ -20,10 +20,23 @@ export default createEslintRule<Options, MessageIds>({
     },
   },
   defaultOptions: [],
-  create: function (context) {
+  create(context) {
     function checkParameters(params) {
+      let paramObjectInTheMiddle = false;
+
       params.forEach((param) => {
+        if (param.type === "ObjectPattern") {
+          paramObjectInTheMiddle = true;
+        }
+
         if (param.optional || param.type === "AssignmentPattern") {
+          context.report({
+            node: param,
+            messageId: "noNonDestructuredOptional",
+          });
+        }
+
+        if (paramObjectInTheMiddle && param.type !== "ObjectPattern") {
           context.report({
             node: param,
             messageId: "noNonDestructuredOptional",
