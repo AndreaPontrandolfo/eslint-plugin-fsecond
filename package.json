@@ -1,9 +1,15 @@
 {
   "name": "eslint-plugin-fsecond",
   "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -45,8 +51,8 @@
     "prettier": "^3.0.1",
     "rimraf": "^5.0.1",
     "semantic-release": "^22.0.5",
-    "typescript": "^5.1.6",
-    "unbuild": "^1.2.1",
+    "typescript": "^5.2.2",
+    "unbuild": "^2.0.0",
     "vitest": "^0.33.0"
   },
   "version": "0.0.0-development"

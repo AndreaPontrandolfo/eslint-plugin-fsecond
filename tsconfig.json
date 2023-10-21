@@ -1,10 +1,27 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "composite": false,
     "baseUrl": ".",
-    "target": "es2020",
-    "module": "es2020",
+    "target": "ESNext",
+    "module": "ES2022",
     "moduleResolution": "bundler",
-    "strict": true
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "checkJs": false,
+    "experimentalDecorators": false,
+    "declaration": false,
+    "declarationMap": false
   },
-  "include": ["**/*.ts"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "build", "coverage"]
 }
