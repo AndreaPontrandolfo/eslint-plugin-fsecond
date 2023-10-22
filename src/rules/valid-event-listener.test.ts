@@ -1,6 +1,6 @@
 import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
 import { it } from "vitest";
-import rule, { RULE_NAME } from "./ensure-matching-remove-event-listener";
+import rule, { RULE_NAME } from "./valid-event-listener";
 
 const valids = [
   `useEffect(() => {
@@ -469,7 +469,7 @@ const invalids = [
   },
 ] as const;
 
-it("ensure-matching-remove-event-listener", () => {
+it("valid-event-listener", () => {
   const ruleTester: RuleTester = new RuleTester({
     parser: require.resolve("@typescript-eslint/parser"),
   });

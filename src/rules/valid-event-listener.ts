@@ -1,6 +1,6 @@
 import { createEslintRule } from "../utils";
 
-export const RULE_NAME = "ensure-matching-remove-event-listener";
+export const RULE_NAME = "valid-event-listener";
 export type MessageIds =
   | "required-cleanup"
   | "required-remove-eventListener"

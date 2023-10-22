@@ -1,5 +1,5 @@
 import preferDestructuredOptionals from "./rules/prefer-destructured-optionals";
-import ensureMatchingRemoveEventListener from "./rules/ensure-matching-remove-event-listener";
+import validEventListener from "./rules/valid-event-listener";
 
 const plugin = {
   meta: {
@@ -8,7 +8,7 @@ const plugin = {
   },
   rules: {
     "prefer-destructured-optionals": preferDestructuredOptionals,
-    "ensure-matching-remove-event-listener": ensureMatchingRemoveEventListener,
+    "valid-event-listener": validEventListener,
   },
 };
 
