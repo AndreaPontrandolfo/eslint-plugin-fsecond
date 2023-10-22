@@ -14,7 +14,6 @@ export default createEslintRule<Options, MessageIds>({
     type: "problem",
     docs: {
       description: "Enforces best practices around addEventListener method.",
-      recommended: "recommended",
     },
     schema: [
       {

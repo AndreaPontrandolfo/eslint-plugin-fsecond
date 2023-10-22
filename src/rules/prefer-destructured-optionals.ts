@@ -11,7 +11,6 @@ export default createEslintRule<Options, MessageIds>({
     docs: {
       description:
         "enforce placing optional parameters on a destructured object instead of the function signature itself",
-      recommended: "stylistic",
     },
     schema: [],
     messages: {
