@@ -1,5 +1,7 @@
 # ESLINT PLUGIN FSECOND
 
+ESLint plugin with some opinionated and stylistic rules.
+
 ## Description
 
 This ESLint plugin currently contains 2 rules:

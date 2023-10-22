@@ -1,5 +1,6 @@
 {
   "name": "eslint-plugin-fsecond",
+  "description": "ESLint plugin with some opinionated and stylistic rules.",
   "license": "MIT",
   "type": "module",
   "exports": {
