@@ -29,7 +29,9 @@
   "keywords": [
     "javascript",
     "typescript",
-    "eslint"
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin"
   ],
   "peerDependencies": {
     "eslint": ">=8.23.0",

@@ -1,9 +1,10 @@
 import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
-import { it } from "vitest";
+import { test } from "vitest";
 import rule, { RULE_NAME } from "./valid-event-listener";
-
-const valids = [
-  `useEffect(() => {
+const casesWithRequireUseEventListenerHookOption = {
+  valids: [
+    {
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -23,10 +24,16 @@ const valids = [
           doMoreOfThatAfter();
         };
       }, [])`,
-  `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
         refcurrent = value;
       }, [value]);`,
-  `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -46,7 +53,10 @@ const valids = [
           doMoreOfThatAfter();
         };
       }, [])`,
-  `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -66,7 +76,10 @@ const valids = [
           doMoreOfThatAfter();
         };
       }, [])`,
-  `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -86,62 +99,67 @@ const valids = [
           doMoreOfThatAfter();
         };
       }, [])`,
-];
-
-const invalids = [
-  {
-    // window.document - inline-if - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+    },
+  ],
+  invalids: [
+    {
+      // window.document - inline-if - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           if (x) window.document.addEventListener("keydown", handleUserKeyPress);
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window.document - ternary - consequent - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window.document - ternary - consequent - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           x && window.document.addEventListener("keydown", handleUserKeyPress);
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window.document - ternary - alternate - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window.document - ternary - alternate - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           x ? window.document.addEventListener("keydown", handleUserKeyPress) : x();
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window.document - if - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window.document - if - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           if (x) {
             window.document.addEventListener("keydown", handleUserKeyPress);
           }
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window.document - else - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window.document - else - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           if (x) {
             x()
@@ -149,42 +167,45 @@ const invalids = [
             window.document.addEventListener("keydown", handleUserKeyPress);
           }
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window.document - && - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window.document - && - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
             x && window.document.addEventListener("keydown", handleUserKeyPress);
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window.document - required-cleanup
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window.document - required-cleanup
+      code: `useEffect(() => {
           doThis();
           if (x) {
             doThisMore()
           }
           window.document.addEventListener("keydown", handleUserKeyPress);
         }, [])`,
-    errors: [
-      {
-        messageId: "required-cleanup",
-      },
-    ],
-  },
-  {
-    // window.document - required-remove-eventListener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    {
+      // window.document - required-remove-eventListener
+      code: `useEffect(() => {
           doThis();
           if (x) {
             doThisMore()
@@ -198,15 +219,16 @@ const invalids = [
             doThatAfter();
           };
         }, [])`,
-    errors: [
-      {
-        messageId: "required-remove-eventListener",
-      },
-    ],
-  },
-  {
-    // document - required-cleanup
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    {
+      // document - required-cleanup
+      code: `useEffect(() => {
           doThis();
           if (x) {
             doThisMore()
@@ -214,15 +236,16 @@ const invalids = [
           document.addEventListener("keydown", handleUserKeyPress);
           doOtherStuff();
         }, [])`,
-    errors: [
-      {
-        messageId: "required-cleanup",
-      },
-    ],
-  },
-  {
-    // document - required-remove-eventListener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    {
+      // document - required-remove-eventListener
+      code: `useEffect(() => {
           doThis();
           if (x) {
             doThisMore()
@@ -236,41 +259,44 @@ const invalids = [
             doThatAfter();
           };
         }, [])`,
-    errors: [
-      {
-        messageId: "required-remove-eventListener",
-      },
-    ],
-  },
-  {
-    // document - if - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    {
+      // document - if - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           if (x) {
             document.addEventListener("keydown", handleUserKeyPress);
           }
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // document - && - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // document - && - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
             x && document.addEventListener("keydown", handleUserKeyPress);
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window - required-cleanup
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window - required-cleanup
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -280,15 +306,16 @@ const invalids = [
         doOtherStuff();
         doSomeOtherStuff();
       }, [])`,
-    errors: [
-      {
-        messageId: "required-cleanup",
-      },
-    ],
-  },
-  {
-    // window - required-remove-eventListener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    {
+      // window - required-remove-eventListener
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -302,41 +329,44 @@ const invalids = [
           doMoreOfThat();
         };
       }, [])`,
-    errors: [
-      {
-        messageId: "required-remove-eventListener",
-      },
-    ],
-  },
-  {
-    // window - if - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    {
+      // window - if - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           if (x) {
             window.addEventListener("keydown", handleUserKeyPress);
           }
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // window - && - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // window - && - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
             x && window.addEventListener("keydown", handleUserKeyPress);
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // content - required-cleanup
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // content - required-cleanup
+      code: `useEffect(() => {
         doMoreOfThis();
         const content = window;
         if (x) {
@@ -345,15 +375,16 @@ const invalids = [
         content.addEventListener("keydown", handleUserKeyPress);
         doSomeOtherStuff();
       }, [])`,
-    errors: [
-      {
-        messageId: "required-cleanup",
-      },
-    ],
-  },
-  {
-    // content - required-remove-eventListener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    {
+      // content - required-remove-eventListener
+      code: `useEffect(() => {
         doMoreOfThis();
         const content = window;
         if (x) {
@@ -365,42 +396,45 @@ const invalids = [
           doMoreOfThat();
         };
       }, [])`,
-    errors: [
-      {
-        messageId: "required-remove-eventListener",
-      },
-    ],
-  },
-  {
-    // content - if - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    {
+      // content - if - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
           const content = window;
           if (x) {
             content.addEventListener("keydown", handleUserKeyPress);
           }
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  {
-    // content - && - no-conditional-addeventlistener
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    {
+      // content - && - no-conditional-addeventlistener
+      code: `useEffect(() => {
           doThis();
             x && content.addEventListener("keydown", handleUserKeyPress);
         }, [])`,
-    errors: [
-      {
-        messageId: "no-conditional-addeventlistener",
-      },
-    ],
-  },
-  // window.addEventListener X 2 - required-remove-eventListener
-  {
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    // window.addEventListener X 2 - required-remove-eventListener
+    {
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -415,15 +449,16 @@ const invalids = [
           doMoreOfThat();
         };
       }, [])`,
-    errors: [
-      {
-        messageId: "required-remove-eventListener",
-      },
-    ],
-  },
-  // document.addEventListener X 2 - required-remove-eventListener
-  {
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    // document.addEventListener X 2 - required-remove-eventListener
+    {
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -438,15 +473,16 @@ const invalids = [
           doMoreOfThat();
         };
       }, [])`,
-    errors: [
-      {
-        messageId: "required-remove-eventListener",
-      },
-    ],
-  },
-  // window.document.addEventListener X 2 - required-remove-eventListener
-  {
-    code: `useEffect(() => {
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    // window.document.addEventListener X 2 - required-remove-eventListener
+    {
+      code: `useEffect(() => {
         doThis();
         doMoreOfThis();
         if (x) {
@@ -461,21 +497,97 @@ const invalids = [
           doMoreOfThat();
         };
       }, [])`,
-    errors: [
-      {
-        messageId: "required-remove-eventListener",
-      },
-    ],
-  },
-] as const;
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+  ] as const,
+};
 
-it("valid-event-listener", () => {
+const casesWithoutOptions = {
+  valids: [
+    {
+      code: `
+      useEventListener('scroll', onScroll)
+      useEventListener('visibilitychange', onVisibilityChange, documentRef)
+      useEventListener('click', onClick, buttonRef)
+      `,
+    },
+    {
+      code: `useEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+    },
+  ],
+  invalids: [
+    {
+      code: `
+      useEffect(() => {
+      doThis();
+      doMoreOfThis();
+      if (x) {
+        doThisMore()
+      }
+      window.addEventListener("keydown", handleUserKeyPress);
+      doOtherStuff();
+      doSomeOtherStuff();
+      return () => {
+        doThatBefore();
+        doMoreOfThatBefore();
+        if (x) {
+          doThisMore()
+        }
+        window.removeEventListener("keydown", handleUserKeyPress);
+        doThatAfter();
+        doMoreOfThatAfter();
+      };
+    }, [])`,
+      errors: [
+        {
+          messageId: "require-use-event-listener-hook",
+        },
+      ],
+    },
+  ] as const,
+};
+
+test("valid-event-listener - {requireUseEventListenerHook: false}", () => {
   const ruleTester: RuleTester = new RuleTester({
     parser: require.resolve("@typescript-eslint/parser"),
   });
 
   ruleTester.run(RULE_NAME, rule, {
-    valid: valids,
-    invalid: invalids,
+    valid: casesWithRequireUseEventListenerHookOption.valids,
+    invalid: casesWithRequireUseEventListenerHookOption.invalids,
+  });
+});
+
+test("valid-event-listener - {requireUseEventListenerHook: true}", () => {
+  const ruleTester: RuleTester = new RuleTester({
+    parser: require.resolve("@typescript-eslint/parser"),
+  });
+
+  ruleTester.run(RULE_NAME, rule, {
+    valid: casesWithoutOptions.valids,
+    invalid: casesWithoutOptions.invalids,
   });
 });

@@ -4,19 +4,30 @@ export const RULE_NAME = "valid-event-listener";
 export type MessageIds =
   | "required-cleanup"
   | "required-remove-eventListener"
-  | "no-conditional-addeventlistener";
-export type Options = [];
+  | "no-conditional-addeventlistener"
+  | "require-use-event-listener-hook";
+export type Options = unknown[];
 
 export default createEslintRule<Options, MessageIds>({
   name: RULE_NAME,
   meta: {
     type: "problem",
     docs: {
-      description:
-        "Enforces that every addEventListener should have a matching removeEventListener in the same useEffect block",
+      description: "Enforces best practices around addEventListener method.",
       recommended: "recommended",
     },
-    schema: [],
+    schema: [
+      {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          requireUseEventListenerHook: {
+            type: "boolean",
+            default: true,
+          },
+        },
+      },
+    ],
     messages: {
       "required-cleanup":
         "Missing a cleanup function for the addEventListener.",
@@ -24,10 +35,21 @@ export default createEslintRule<Options, MessageIds>({
         "Missing a matching removeEventListener.",
       "no-conditional-addeventlistener":
         "Don't wrap a addEventListener in a condition.",
+      "require-use-event-listener-hook":
+        "Use a useEventListener hook from a hooks library instead of manually adding and removing event listeners.",
     },
   },
-  defaultOptions: [],
+  defaultOptions: [
+    {
+      requireUseEventListenerHook: true,
+    },
+  ],
   create(context) {
+    const providedFirstOption = context.options[0];
+    const { requireUseEventListenerHook } = {
+      requireUseEventListenerHook: true,
+      ...providedFirstOption,
+    };
     return {
       ExpressionStatement(node) {
         let hasAddEventListener = false;
@@ -230,6 +252,12 @@ export default createEslintRule<Options, MessageIds>({
               }
 
               return true;
+            });
+          }
+          if (hasAddEventListener && requireUseEventListenerHook) {
+            context.report({
+              node,
+              messageId: "require-use-event-listener-hook",
             });
           }
           if (hasAddEventListenerInCondition) {
