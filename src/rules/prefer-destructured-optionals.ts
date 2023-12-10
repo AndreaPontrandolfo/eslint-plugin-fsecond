@@ -21,21 +21,24 @@ export default createEslintRule<Options, MessageIds>({
   defaultOptions: [],
   create(context) {
     function checkParameters(params) {
-      let paramObjectInTheMiddle = false;
+      let isParamObjectInTheMiddle = false;
 
       params.forEach((param) => {
         if (param.type === "ObjectPattern") {
-          paramObjectInTheMiddle = true;
+          isParamObjectInTheMiddle = true;
         }
 
-        if (param.optional || param.type === "AssignmentPattern") {
+        if (
+          param.left?.type !== "ObjectPattern" &&
+          (param.optional || param.type === "AssignmentPattern")
+        ) {
           context.report({
             node: param,
             messageId: "noNonDestructuredOptional",
           });
         }
 
-        if (paramObjectInTheMiddle && param.type !== "ObjectPattern") {
+        if (isParamObjectInTheMiddle && param.type !== "ObjectPattern") {
           context.report({
             node: param,
             messageId: "noNonDestructuredOptional",

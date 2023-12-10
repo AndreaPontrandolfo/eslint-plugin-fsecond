@@ -27,6 +27,13 @@ const valids = [
   "function myFunction({ optionalParam1 = 'default', optionalParam2 = 42 }) { console.log(optionalParam1, optionalParam2); }",
   // Arrow function with an object containing optional properties only
   "const myFn = ({ optionalParam1 = 'default', optionalParam2 = 42 }) => { console.log(optionalParam1, optionalParam2); }",
+  `const writeJSONToFile = (
+    inputFilePath: string,
+    outputFilePath: string,
+    { discardUnmappedColumns } = {
+      discardUnmappedColumns: false,
+    },
+  ) => {}`,
 ];
 
 const invalids = [
