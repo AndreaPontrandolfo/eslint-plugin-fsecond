@@ -10,7 +10,7 @@ export default createEslintRule<Options, MessageIds>({
     type: "problem",
     docs: {
       description:
-        "enforce placing optional parameters on a destructured object instead of the function signature itself",
+        "Enforce placing optional parameters on a destructured object instead of the function signature itself",
     },
     schema: [],
     messages: {
