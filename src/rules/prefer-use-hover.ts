@@ -1,6 +1,11 @@
-import { Rule } from "eslint";
+import { createEslintRule } from "../utils";
 
-const rule: Rule.RuleModule = {
+export const RULE_NAME = "prefer-use-hover";
+export type MessageIds = "";
+export type Options = [];
+
+export default createEslintRule<Options, MessageIds>({
+  name: RULE_NAME,
   meta: {
     type: "suggestion",
     docs: {
@@ -12,7 +17,7 @@ const rule: Rule.RuleModule = {
     fixable: "code",
     schema: [],
   },
-
+  defaultOptions: [],
   create: function (context) {
     return {
       JSXOpeningElement(node) {
@@ -53,6 +58,4 @@ const rule: Rule.RuleModule = {
       },
     };
   },
-};
-
-export default rule;
+});
