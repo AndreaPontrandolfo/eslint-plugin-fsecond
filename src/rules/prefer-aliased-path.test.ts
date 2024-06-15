@@ -4,7 +4,14 @@ import rule, { RULE_NAME } from "./prefer-aliased-path";
 
 const valids = [
   `import { myHelper } from "#helpers/myHelper";`,
+  `import myHelper from "#helpers/myHelper";`,
+  `import { myHelper } from "./helpers/myHelper";`,
   `import { myHook } from "./hooks/myHook";`,
+  `import myHook from "./hooks/myHook";`,
+  `import { myHook } from "../hooks/myHook";`,
+  `import myHook from "../hooks/myHook";`,
+  `const myHook = require("../../hooks/myHook");`,
+  `const { myHook } = require("../../hooks/myHook");`,
 ];
 
 const invalids = [[`import { myHelper } from "./src/helpers/myHelper";`]];
