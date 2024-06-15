@@ -1,0 +1,6 @@
+{
+  "name": "dummy-package-json",
+  "imports": {
+    "#helpers/*": "./src/helpers/*.ts"
+  }
+}
