@@ -36,10 +36,7 @@ export default createEslintRule<Options, MessageIds>({
         const packagePath = node.source.value;
 
         if (packagePath.startsWith(".")) {
-          const currentLocalDirectory = new URL(".", import.meta.url);
-          packageJson = readPackageUpSync({
-            cwd: currentLocalDirectory,
-          });
+          packageJson = readPackageUpSync();
         }
       }
       if (packageJson) {

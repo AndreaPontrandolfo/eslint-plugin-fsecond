@@ -14,7 +14,10 @@ const valids = [
   `const { myHook } = require("../../hooks/myHook");`,
 ];
 
-const invalids = [[`import { myHelper } from "./src/helpers/myHelper";`]];
+const invalids = [
+  [`import { myHelper } from "./src/helpers/myHelper";`],
+  [`import { myHelper } from "../root/src/helpers/myHelper";`],
+];
 
 test("prefer-aliased-path", () => {
   const ruleTester: RuleTester = new RuleTester({
