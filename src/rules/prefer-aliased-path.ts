@@ -1,4 +1,4 @@
-import { readPackageUpSync } from "read-package-up";
+import { readPackageUpSync, type ReadResult } from "read-package-up";
 import { minimatch } from "minimatch";
 import { createEslintRule } from "../utils";
 
@@ -28,21 +28,35 @@ export default createEslintRule<Options, MessageIds>({
   },
   defaultOptions: [],
   create(context) {
+    let packageJson;
+    const sourceCode = context.getSourceCode();
+
+    sourceCode.ast.body.some((node) => {
+      if (node.type === "ImportDeclaration") {
+        const packagePath = node.source.value;
+
+        if (packagePath.startsWith(".")) {
+          const currentLocalDirectory = new URL(".", import.meta.url);
+          packageJson = readPackageUpSync({
+            cwd: currentLocalDirectory,
+          });
+        }
+      }
+      if (packageJson) {
+        return true;
+      }
+    });
+
+    if (!packageJson?.packageJson?.imports) {
+      return {};
+    }
+
     return {
       ImportDeclaration(node) {
         if (node.type === "ImportDeclaration") {
           const packagePath = node.source.value;
 
           if (packagePath.startsWith(".")) {
-            const currentLocalDirectory = new URL(".", import.meta.url);
-            const packageJson = readPackageUpSync({
-              cwd: currentLocalDirectory,
-            });
-
-            if (!packageJson?.packageJson?.imports) {
-              return;
-            }
-
             const importAliases = Object.values(
               packageJson.packageJson.imports,
             );
