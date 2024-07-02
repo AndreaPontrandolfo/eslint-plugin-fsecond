@@ -6,7 +6,7 @@ export type MessageIds =
   | "required-remove-eventListener"
   | "no-conditional-addeventlistener"
   | "require-use-event-listener-hook";
-export type Options = unknown[];
+export type Options = [{ requireUseEventListenerHook: boolean }];
 
 export default createEslintRule<Options, MessageIds>({
   name: RULE_NAME,
