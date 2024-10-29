@@ -1,3 +1,4 @@
+import type { TSESTree } from "@typescript-eslint/types";
 import { createEslintRule } from "../utils";
 
 export const RULE_NAME = "prefer-destructured-optionals";
@@ -20,15 +21,16 @@ export default createEslintRule<Options, MessageIds>({
   },
   defaultOptions: [],
   create(context) {
-    function checkParameters(params) {
+    const checkParameters = (params: TSESTree.Parameter[]) => {
       let isParamObjectInTheMiddle = false;
 
-      params.forEach((param) => {
+      for (const param of params) {
         if (param.type === "ObjectPattern") {
           isParamObjectInTheMiddle = true;
         }
 
         if (
+          param.type === "AssignmentPattern" &&
           param.left?.type !== "ObjectPattern" &&
           (param.optional || param.type === "AssignmentPattern")
         ) {
@@ -44,8 +46,8 @@ export default createEslintRule<Options, MessageIds>({
             messageId: "noNonDestructuredOptional",
           });
         }
-      });
-    }
+      }
+    };
 
     return {
       FunctionDeclaration(node) {

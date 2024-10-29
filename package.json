@@ -5,20 +5,25 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && unbuild",
+    "build": "unbuild",
     "stub": "unbuild --stub",
     "test": "vitest",
-    "publint": "pnpm dlx publint",
+    "lint": "eslint --max-warnings=0 --flag unstable_ts_config",
+    "publint": "publint",
     "semantic-release": "pnpm build && semantic-release"
   },
   "author": {
@@ -35,30 +40,47 @@
     "eslint-plugin"
   ],
   "peerDependencies": {
-    "eslint": ">=8.23.0",
-    "typescript": ">=4.0.0"
+    "eslint": "^9.0.0",
+    "typescript": ">=5.0.0"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20.9.0 || >=21.1.0"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^6.2.0",
-    "@typescript-eslint/utils": "^6.0.0",
-    "minimatch": "^9.0.4",
+    "@typescript-eslint/parser": "^8.15.0",
+    "@typescript-eslint/utils": "^8.15.0",
+    "minimatch": "^10.0.1",
     "read-package-up": "^11.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.4.2",
-    "eslint": "^8.46.0",
-    "eslint-config-sheriff": "^14.2.0",
-    "eslint-define-config": "^1.22.0",
-    "eslint-plugin-eslint-plugin": "^5.1.1",
-    "prettier": "^3.0.1",
-    "rimraf": "^5.0.1",
-    "semantic-release": "^22.0.5",
-    "typescript": "^5.4.5",
-    "unbuild": "^2.0.0",
-    "vitest": "^0.33.0"
+    "@types/node": "^20.17.11",
+    "@typescript-eslint/rule-tester": "^8.15.0",
+    "@typescript-eslint/types": "^8.15.0",
+    "eslint": "^9.17.0",
+    "eslint-config-sheriff": "^25.5.0",
+    "eslint-define-config": "^2.1.0",
+    "eslint-plugin-eslint-plugin": "^6.4.0",
+    "jiti": "^2.4.2",
+    "prettier": "^3.4.2",
+    "publint": "^0.2.12",
+    "semantic-release": "^24.2.0",
+    "typescript": "^5.7.2",
+    "unbuild": "^3.2.0",
+    "vitest": "^2.1.8"
   },
-  "version": "0.0.0-development"
+  "pnpm": {
+    "overrides": {
+      "eslint-plugin-fsecond": "file:."
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "eslint": "9"
+      }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "version": "0.0.0-development",
+  "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
 }

@@ -1,5 +1,5 @@
-import { readPackageUpSync, type ReadResult } from "read-package-up";
 import { minimatch } from "minimatch";
+import { readPackageUpSync, type ReadResult } from "read-package-up";
 import { createEslintRule } from "../utils";
 
 export const RULE_NAME = "prefer-aliased-path";
@@ -28,8 +28,8 @@ export default createEslintRule<Options, MessageIds>({
   },
   defaultOptions: [],
   create(context) {
-    let packageJson;
-    const sourceCode = context.getSourceCode();
+    let packageJson: ReadResult | undefined;
+    const { sourceCode } = context;
 
     sourceCode.ast.body.some((node) => {
       if (node.type === "ImportDeclaration") {
@@ -37,55 +37,58 @@ export default createEslintRule<Options, MessageIds>({
 
         if (packagePath.startsWith(".")) {
           const currentLocalDirectory = new URL(".", import.meta.url);
+
           packageJson = readPackageUpSync({
             cwd: currentLocalDirectory,
           });
         }
       }
-      if (packageJson) {
-        return true;
-      }
+
+      return packageJson !== undefined;
     });
 
-    if (!packageJson?.packageJson?.imports) {
+    const imports = packageJson?.packageJson?.imports;
+
+    if (imports === undefined) {
       return {};
     }
 
     return {
       ImportDeclaration(node) {
-        if (node.type === "ImportDeclaration") {
-          const packagePath = node.source.value;
+        if (node.type !== "ImportDeclaration") {
+          return;
+        }
 
-          if (packagePath.startsWith(".")) {
-            const importAliases = Object.values(
-              packageJson.packageJson.imports,
-            );
+        const packagePath = node.source.value;
 
-            for (const importAlias of importAliases) {
-              if (!importAlias || typeof importAlias !== "string") {
-                continue;
-              }
+        if (packagePath.startsWith(".")) {
+          const importAliases = Object.values(imports);
 
-              const capturedExtension = importAlias.endsWith(".ts")
-                ? ".ts"
-                : importAlias.endsWith(".js")
+          for (const importAlias of importAliases) {
+            if (!importAlias || typeof importAlias !== "string") {
+              continue;
+            }
+
+            // eslint-disable-next-line no-nested-ternary -- Then make `switch` better.
+            const capturedExtension = importAlias.endsWith(".ts")
+              ? ".ts"
+              : importAlias.endsWith(".js")
                 ? ".js"
                 : "";
 
-              const isPathMatched = minimatch(
-                `${packagePath}${capturedExtension}`,
-                importAlias,
-              );
+            const isPathMatched = minimatch(
+              `${packagePath}${capturedExtension}`,
+              importAlias,
+            );
 
-              if (isPathMatched) {
-                context.report({
-                  node,
-                  messageId: "preferAliasedPath",
-                  data: {
-                    importPath: packagePath,
-                  },
-                });
-              }
+            if (isPathMatched) {
+              context.report({
+                node,
+                messageId: "preferAliasedPath",
+                data: {
+                  importPath: packagePath,
+                },
+              });
             }
           }
         }

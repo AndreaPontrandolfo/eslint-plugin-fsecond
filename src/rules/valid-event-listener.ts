@@ -47,8 +47,10 @@ export default createEslintRule<Options, MessageIds>({
     const providedFirstOption = context.options[0];
     const { requireUseEventListenerHook } = {
       requireUseEventListenerHook: true,
+      // @ts-expect-error
       ...providedFirstOption,
     };
+
     return {
       ExpressionStatement(node) {
         let hasAddEventListener = false;
@@ -88,10 +90,12 @@ export default createEslintRule<Options, MessageIds>({
                       ifStatementBodyElement.type === "ExpressionStatement" &&
                       ifStatementBodyElement.expression;
                     const ifStatementExpressionCalle =
+                      ifStatementExpression !== false &&
                       ifStatementExpression.type === "CallExpression" &&
                       ifStatementExpression.callee;
 
                     if (
+                      ifStatementExpressionCalle !== false &&
                       ifStatementExpressionCalle.type === "MemberExpression" &&
                       ifStatementExpressionCalle.property.type ===
                         "Identifier" &&
@@ -100,8 +104,6 @@ export default createEslintRule<Options, MessageIds>({
                     ) {
                       hasAddEventListenerInCondition = true;
                     }
-
-                    return hasAddEventListenerInCondition;
                   });
                 }
                 if (element.alternate?.type === "BlockStatement") {
@@ -112,11 +114,13 @@ export default createEslintRule<Options, MessageIds>({
                           "ExpressionStatement" &&
                         ifStatementAlternateBodyElement.expression;
                       const ifStatementAlternateExpressionCalle =
+                        ifStatementAlternateExpression !== false &&
                         ifStatementAlternateExpression.type ===
                           "CallExpression" &&
                         ifStatementAlternateExpression.callee;
 
                       if (
+                        ifStatementAlternateExpressionCalle !== false &&
                         ifStatementAlternateExpressionCalle.type ===
                           "MemberExpression" &&
                         ifStatementAlternateExpressionCalle.property.type ===
@@ -126,8 +130,6 @@ export default createEslintRule<Options, MessageIds>({
                       ) {
                         hasAddEventListenerInCondition = true;
                       }
-
-                      return true;
                     },
                   );
                 }

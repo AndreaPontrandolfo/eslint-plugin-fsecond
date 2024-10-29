@@ -1,5 +1,5 @@
 {
-  "name": "dummy-package-json",
+  "name": "fixture",
   "imports": {
     "#helpers/*": "./src/helpers/*.ts"
   }

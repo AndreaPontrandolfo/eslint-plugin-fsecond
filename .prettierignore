@@ -4,3 +4,5 @@
 /artifacts/
 /coverage/
 .git/
+
+/pnpm-lock.yaml

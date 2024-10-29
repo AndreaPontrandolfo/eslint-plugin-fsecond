@@ -1,6 +1,10 @@
-import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
-import { test } from "vitest";
+import { describe, test } from "vitest";
+import { RuleTester } from "@typescript-eslint/rule-tester";
 import rule, { RULE_NAME } from "./valid-event-listener";
+
+const conditionalErrorMessage = "no-conditional-addeventlistener";
+const cleanupErrorMessage = "required-cleanup";
+const removeErrorMessage = "required-remove-eventListener";
 
 const casesWithRequireUseEventListenerHookOption = {
   valids: [
@@ -113,7 +117,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -126,7 +130,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -139,7 +143,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -154,7 +158,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -171,7 +175,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -184,7 +188,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -200,7 +204,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-cleanup",
+          messageId: cleanupErrorMessage,
         },
       ],
     },
@@ -223,7 +227,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-remove-eventListener",
+          messageId: removeErrorMessage,
         },
       ],
     },
@@ -240,7 +244,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-cleanup",
+          messageId: cleanupErrorMessage,
         },
       ],
     },
@@ -263,7 +267,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-remove-eventListener",
+          messageId: removeErrorMessage,
         },
       ],
     },
@@ -278,7 +282,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -291,7 +295,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -310,7 +314,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-cleanup",
+          messageId: cleanupErrorMessage,
         },
       ],
     },
@@ -333,7 +337,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-remove-eventListener",
+          messageId: removeErrorMessage,
         },
       ],
     },
@@ -348,7 +352,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -361,7 +365,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -379,7 +383,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-cleanup",
+          messageId: cleanupErrorMessage,
         },
       ],
     },
@@ -400,7 +404,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-remove-eventListener",
+          messageId: removeErrorMessage,
         },
       ],
     },
@@ -416,7 +420,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -429,7 +433,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "no-conditional-addeventlistener",
+          messageId: conditionalErrorMessage,
         },
       ],
     },
@@ -453,7 +457,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-remove-eventListener",
+          messageId: removeErrorMessage,
         },
       ],
     },
@@ -477,7 +481,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-remove-eventListener",
+          messageId: removeErrorMessage,
         },
       ],
     },
@@ -501,7 +505,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
       errors: [
         {
-          messageId: "required-remove-eventListener",
+          messageId: removeErrorMessage,
         },
       ],
     },
@@ -571,24 +575,22 @@ const casesWithoutOptions = {
   ] as const,
 };
 
-test("valid-event-listener - {requireUseEventListenerHook: false}", () => {
-  const ruleTester: RuleTester = new RuleTester({
-    parser: require.resolve("@typescript-eslint/parser"),
+describe("valid-event-listener", () => {
+  test("valid-event-listener - {requireUseEventListenerHook: false}", () => {
+    const ruleTester: RuleTester = new RuleTester();
+
+    ruleTester.run(RULE_NAME, rule, {
+      valid: casesWithRequireUseEventListenerHookOption.valids,
+      invalid: casesWithRequireUseEventListenerHookOption.invalids,
+    });
   });
 
-  ruleTester.run(RULE_NAME, rule, {
-    valid: casesWithRequireUseEventListenerHookOption.valids,
-    invalid: casesWithRequireUseEventListenerHookOption.invalids,
-  });
-});
+  test("valid-event-listener - {requireUseEventListenerHook: true}", () => {
+    const ruleTester: RuleTester = new RuleTester();
 
-test("valid-event-listener - {requireUseEventListenerHook: true}", () => {
-  const ruleTester: RuleTester = new RuleTester({
-    parser: require.resolve("@typescript-eslint/parser"),
-  });
-
-  ruleTester.run(RULE_NAME, rule, {
-    valid: casesWithoutOptions.valids,
-    invalid: casesWithoutOptions.invalids,
+    ruleTester.run(RULE_NAME, rule, {
+      valid: casesWithoutOptions.valids,
+      invalid: casesWithoutOptions.invalids,
+    });
   });
 });
