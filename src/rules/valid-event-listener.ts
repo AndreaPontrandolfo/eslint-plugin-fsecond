@@ -130,7 +130,7 @@ export default createEslintRule<Options, MessageIds>({
                       ) {
                         hasAddEventListenerInCondition = true;
                       }
-                    }
+                    },
                   );
                 }
                 if (element.consequent.type === "ExpressionStatement") {
