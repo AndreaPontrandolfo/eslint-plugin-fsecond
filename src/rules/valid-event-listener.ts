@@ -89,17 +89,17 @@ export default createEslintRule<Options, MessageIds>({
                     const ifStatementExpression =
                       ifStatementBodyElement.type === "ExpressionStatement" &&
                       ifStatementBodyElement.expression;
-                    const ifStatementExpressionCalle =
+                    const ifStatementExpressionCallee =
                       ifStatementExpression !== false &&
                       ifStatementExpression.type === "CallExpression" &&
                       ifStatementExpression.callee;
 
                     if (
-                      ifStatementExpressionCalle !== false &&
-                      ifStatementExpressionCalle.type === "MemberExpression" &&
-                      ifStatementExpressionCalle.property.type ===
+                      ifStatementExpressionCallee !== false &&
+                      ifStatementExpressionCallee.type === "MemberExpression" &&
+                      ifStatementExpressionCallee.property.type ===
                         "Identifier" &&
-                      ifStatementExpressionCalle.property.name ===
+                      ifStatementExpressionCallee.property.name ===
                         "addEventListener"
                     ) {
                       hasAddEventListenerInCondition = true;
@@ -113,24 +113,24 @@ export default createEslintRule<Options, MessageIds>({
                         ifStatementAlternateBodyElement.type ===
                           "ExpressionStatement" &&
                         ifStatementAlternateBodyElement.expression;
-                      const ifStatementAlternateExpressionCalle =
+                      const ifStatementAlternateExpressionCallee =
                         ifStatementAlternateExpression !== false &&
                         ifStatementAlternateExpression.type ===
                           "CallExpression" &&
                         ifStatementAlternateExpression.callee;
 
                       if (
-                        ifStatementAlternateExpressionCalle !== false &&
-                        ifStatementAlternateExpressionCalle.type ===
+                        ifStatementAlternateExpressionCallee !== false &&
+                        ifStatementAlternateExpressionCallee.type ===
                           "MemberExpression" &&
-                        ifStatementAlternateExpressionCalle.property.type ===
+                        ifStatementAlternateExpressionCallee.property.type ===
                           "Identifier" &&
-                        ifStatementAlternateExpressionCalle.property.name ===
+                        ifStatementAlternateExpressionCallee.property.name ===
                           "addEventListener"
                       ) {
                         hasAddEventListenerInCondition = true;
                       }
-                    },
+                    }
                   );
                 }
                 if (element.consequent.type === "ExpressionStatement") {
