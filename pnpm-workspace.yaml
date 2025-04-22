@@ -1,0 +1,9 @@
+overrides:
+  eslint-plugin-fsecond: file:.
+peerDependencyRules:
+  allowedVersions:
+    eslint: "9"
+onlyBuiltDependencies:
+  - esbuild
+  - rolldown
+  - unrs-resolver

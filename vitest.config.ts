@@ -10,8 +10,8 @@ export default defineConfig({
       concurrent: true,
       shuffle: {
         tests: true,
-        files: false
-      }
-    }
+        files: false,
+      },
+    },
   },
 });

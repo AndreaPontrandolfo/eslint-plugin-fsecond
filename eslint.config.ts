@@ -1,5 +1,9 @@
-import { type SheriffSettings, sheriff } from "eslint-config-sheriff";
-import { defineFlatConfig, type FlatESLintConfig } from "eslint-define-config";
+import {
+  type SheriffSettings,
+  type TSESLint,
+  sheriff,
+  tseslint,
+} from "eslint-config-sheriff";
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 
 const sheriffOptions = {
@@ -11,9 +15,9 @@ const sheriffOptions = {
   vitest: true,
 } satisfies SheriffSettings;
 
-export default defineFlatConfig([
+export default tseslint.config([
   {
-    ignores: ["vitest.config.ts", "build.config.ts", "eslint.config.ts"],
+    ignores: ["vitest.config.ts", "tsdown.config.ts", "eslint.config.ts"],
   },
   ...sheriff(sheriffOptions),
   {
@@ -31,7 +35,7 @@ export default defineFlatConfig([
       "import/no-default-export": 0,
     },
   },
-  eslintPlugin.configs!["flat/recommended"] as FlatESLintConfig,
+  eslintPlugin.configs!["flat/recommended"] as TSESLint.FlatConfig.Config,
   {
     files: ["src/rules/*.test.ts"],
     rules: {
