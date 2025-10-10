@@ -1,6 +1,7 @@
 import preferAliasedPath from "./rules/prefer-aliased-path";
 import preferDestructuredOptionals from "./rules/prefer-destructured-optionals";
 import validEventListener from "./rules/valid-event-listener";
+import noInlineInterfaces from "./rules/no-inline-interfaces";
 
 const plugin = {
   meta: {
@@ -11,6 +12,7 @@ const plugin = {
     "prefer-destructured-optionals": preferDestructuredOptionals,
     "valid-event-listener": validEventListener,
     "prefer-aliased-path": preferAliasedPath,
+    "no-inline-interfaces": noInlineInterfaces,
   },
 };
 
