@@ -18,6 +18,7 @@
     "build": "rimraf dist && unbuild",
     "stub": "unbuild --stub",
     "test": "vitest",
+    "test:no-inline-interfaces": "vitest run src/rules/no-inline-interfaces.test.ts",
     "publint": "pnpm dlx publint",
     "semantic-release": "pnpm build && semantic-release"
   },
@@ -42,23 +43,25 @@
     "node": ">=16"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^6.2.0",
-    "@typescript-eslint/utils": "^6.0.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "@typescript-eslint/utils": "^8.46.0",
     "minimatch": "^9.0.4",
     "read-package-up": "^11.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
-    "eslint": "^8.46.0",
+    "eslint": "^9.37.0",
     "eslint-config-sheriff": "^14.2.0",
     "eslint-define-config": "^1.22.0",
-    "eslint-plugin-eslint-plugin": "^5.1.1",
+    "eslint-plugin-eslint-plugin": "^7.0.0",
+    "eslint-vitest-rule-tester": "^2.2.2",
     "prettier": "^3.0.1",
     "rimraf": "^5.0.1",
     "semantic-release": "^22.0.5",
     "typescript": "^5.4.5",
     "unbuild": "^2.0.0",
-    "vitest": "^0.33.0"
+    "vitest": "^3.2.4"
   },
-  "version": "0.0.0-development"
+  "version": "0.0.0-development",
+  "packageManager": "pnpm@8.14.0+sha512.5d4bf97b349faf1a51318aa1ba887e99d9c36e203dbcb55938a91fddd2454246cb00723d6642f54d463a0f52a2701dadf8de002a37fc613c9cdc94ed5675ddce"
 }
