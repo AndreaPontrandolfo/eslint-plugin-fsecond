@@ -78,6 +78,43 @@ const x: A & B = {};`,
     // Type declarations themselves (should not be flagged)
     `type MyType = { a: string; b: number };`,
     `interface MyInterface { a: string; b: number }`,
+
+    // Mapped types with generic arguments (should be ignored)
+    `const x: Record<string, { a: string }> = {};`,
+    `const y: Partial<{ a: string }> = {};`,
+    `const z: Pick<{ a: string; b: number }, 'a'> = {};`,
+
+    // Async function with Promise wrapper (valid because Promise is generic)
+    `async function fetchData(): Promise<{ data: string }> { return { data: '' }; }`,
+
+    // Class with typed properties using named types
+    `interface UserData { name: string; age: number }
+class User {
+  data: UserData;
+}`,
+
+    // Optional parameter with named type
+    `interface Config { debug: boolean }
+function setup(config?: Config) {}`,
+
+    // Rest parameter with named type array
+    `interface Item { id: string }
+function process(...items: Item[]) {}`,
+
+    // Classes are ignored - inline types in classes are allowed
+    `class User {
+  data: { name: string; age: number };
+}`,
+
+    `class Service {
+  process(data: { id: string; value: number }) {}
+}`,
+
+    `class Service {
+  getData(): { id: string; value: number } {
+    return { id: '', value: 0 };
+  }
+}`,
   ],
 
   invalid: [
@@ -170,6 +207,48 @@ const x: B & { a: string } = {};`,
     // Tuple type
     {
       code: `const x: [{ a: string }, number] = [{a: ''}, 0];`,
+      errors: ["noInlineInterfaces"],
+    },
+
+    // Optional parameter with inline object type
+    {
+      code: `function setup(config?: { debug: boolean }) {}`,
+      errors: ["noInlineInterfaces"],
+    },
+
+    // Rest parameter with inline object type array
+    {
+      code: `function process(...items: { id: string }[]) {}`,
+      errors: ["noInlineInterfaces"],
+    },
+
+    // Nested destructuring with inline type
+    {
+      code: `function fn({ user }: { user: { name: string } }) {}`,
+      errors: ["noInlineInterfaces", "noInlineInterfaces"],
+    },
+
+    // Complex union with multiple inline objects
+    {
+      code: `const x: { type: 'a'; value: string } | { type: 'b'; value: number } = { type: 'a', value: '' };`,
+      errors: ["noInlineInterfaces", "noInlineInterfaces"],
+    },
+
+    // Inline object with method signature
+    {
+      code: `const handler: { onClick(): void; onHover(): void } = { onClick() {}, onHover() {} };`,
+      errors: ["noInlineInterfaces"],
+    },
+
+    // Inline object with index signature
+    {
+      code: `const map: { [key: string]: number } = {};`,
+      errors: ["noInlineInterfaces"],
+    },
+
+    // Type assertion doesn't exempt from rule
+    {
+      code: `const data: { id: string } = { id: '123' } as { id: string };`,
       errors: ["noInlineInterfaces"],
     },
   ],

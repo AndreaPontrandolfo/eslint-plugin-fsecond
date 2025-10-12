@@ -20,7 +20,16 @@ function findTypeLiterals(
   switch (type.type) {
     case "TSTypeLiteral":
       results.push(type);
-      // Don't descend into the literal's members
+      // Also check for nested type literals inside the members
+      type.members.forEach((member) => {
+        if (member.type === "TSPropertySignature" && member.typeAnnotation) {
+          findTypeLiterals(
+            member.typeAnnotation.typeAnnotation,
+            results,
+            skipGenerics,
+          );
+        }
+      });
       return results;
 
     case "TSUnionType":
@@ -88,6 +97,23 @@ export default createEslintRule<Options, MessageIds>({
   defaultOptions: [],
   create(context) {
     /**
+     * Check if a node is inside a class
+     */
+    function isInsideClass(node: TSESTree.Node): boolean {
+      let current = node.parent;
+      while (current) {
+        if (
+          current.type === "ClassDeclaration" ||
+          current.type === "ClassExpression"
+        ) {
+          return true;
+        }
+        current = current.parent;
+      }
+      return false;
+    }
+
+    /**
      * Report all inline object type literals found in a type annotation
      */
     function reportTypeAnnotation(
@@ -101,6 +127,9 @@ export default createEslintRule<Options, MessageIds>({
 
     return {
       VariableDeclarator(node) {
+        // Skip if inside a class
+        if (isInsideClass(node)) return;
+
         // Check variable type annotation
         const id = node.id as TSESTree.Node & {
           typeAnnotation?: TSESTree.TSTypeAnnotation;
@@ -111,6 +140,9 @@ export default createEslintRule<Options, MessageIds>({
       },
 
       FunctionDeclaration(node) {
+        // Skip if inside a class
+        if (isInsideClass(node)) return;
+
         // Check each parameter's type annotation
         node.params.forEach((param) => {
           const p = param as TSESTree.Node & {
@@ -128,6 +160,9 @@ export default createEslintRule<Options, MessageIds>({
       },
 
       FunctionExpression(node) {
+        // Skip if inside a class
+        if (isInsideClass(node)) return;
+
         // Check each parameter's type annotation
         node.params.forEach((param) => {
           const p = param as TSESTree.Node & {
@@ -145,6 +180,9 @@ export default createEslintRule<Options, MessageIds>({
       },
 
       ArrowFunctionExpression(node) {
+        // Skip if inside a class
+        if (isInsideClass(node)) return;
+
         // Check each parameter's type annotation
         node.params.forEach((param) => {
           const p = param as TSESTree.Node & {
