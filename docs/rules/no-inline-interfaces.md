@@ -17,7 +17,7 @@ This rule flags inline object type literals (`{ prop: type }`) when used in:
 
 - Variable type annotations
 - Function parameter type annotations (including destructured parameters)
-- Function return type annotations
+- Function return type annotations (only when `checkReturnTypes: true`)
 
 The rule will flag object literals even when they appear within:
 
@@ -26,11 +26,32 @@ The rule will flag object literals even when they appear within:
 - Array types using bracket syntax (e.g., `{ a: string }[]`)
 - Tuple types (e.g., `[{ a: string }, number]`)
 
-### What the rule ignores
+### Options
+
+This rule accepts an options object with the following properties:
+
+```typescript
+{
+  checkGenericTypes?: boolean; // default: false
+  checkReturnTypes?: boolean; // default: false
+}
+```
+
+#### `checkGenericTypes` (default: `false`)
+
+When `false` (default), the rule ignores inline object types within generic type arguments of type references (e.g., `Readonly<{ a: string }>`, `Promise<{ data: number }>`, `Array<{ a: string }>`).
+
+When `true`, the rule will flag inline object types even inside generic type arguments.
+
+#### `checkReturnTypes` (default: `false`)
+
+When `false` (default), the rule does NOT check function return type annotations.
+
+When `true`, the rule will flag inline object types in function return types.
+
+### What the rule always ignores
 
 **Classes:** The rule completely ignores anything inside classes, including class properties, method parameters, and method return types. This allows for flexibility in class-based code where inline types may be more appropriate.
-
-**Generic type arguments:** The rule ignores inline object types within generic type arguments of type references (e.g., `Readonly<{ a: string }>`, `Promise<{ data: number }>`, `Array<{ a: string }>`).
 
 ## Examples
 
@@ -55,16 +76,36 @@ export const MyReactComponent = (props: { prop1: string; prop2: number }) => {};
 // Function declaration with inline object type
 function MyReactComponent({ prop1, prop2 }: { prop1: string; prop2: number }) {}
 
-// Function with inline return type
-function getData(): { name: string; age: number } {
-  return { name: "John", age: 30 };
-}
-
 // Union with inline object type
 const data: { id: number } | null = null;
 
 // Intersection with inline object types
 const combined: { a: string } & { b: number } = {} as any;
+```
+
+**With `checkReturnTypes: true`:**
+
+```typescript
+// Function with inline return type
+function getData(): { name: string; age: number } {
+  return { name: "John", age: 30 };
+}
+
+// Arrow function with inline return type
+const getUser = (): { id: string; name: string } => ({ id: "", name: "" });
+```
+
+**With `checkGenericTypes: true`:**
+
+```typescript
+// Generic type with inline object
+const items: Array<{ id: string }> = [];
+
+// Readonly with inline object
+const config: Readonly<{ debug: boolean }> = { debug: true };
+
+// Promise with inline object
+const data: Promise<{ result: number }> = Promise.resolve({ result: 42 });
 ```
 
 ### ✅ Valid
@@ -123,6 +164,62 @@ class User {
     return { id: "", value: 0 };
   }
 }
+```
+
+## Configuration Examples
+
+### Default Configuration (Recommended)
+
+```javascript
+// eslint.config.js
+export default [
+  {
+    rules: {
+      "fsecond/no-inline-interfaces": "error",
+    },
+  },
+];
+```
+
+This will check variables and function parameters, but NOT return types or generic type arguments.
+
+### Strict Configuration
+
+```javascript
+// eslint.config.js
+export default [
+  {
+    rules: {
+      "fsecond/no-inline-interfaces": [
+        "error",
+        {
+          checkReturnTypes: true,
+          checkGenericTypes: true,
+        },
+      ],
+    },
+  },
+];
+```
+
+This will check all inline object types including return types and those inside generics.
+
+### Check Only Return Types
+
+```javascript
+// eslint.config.js
+export default [
+  {
+    rules: {
+      "fsecond/no-inline-interfaces": [
+        "error",
+        {
+          checkReturnTypes: true,
+        },
+      ],
+    },
+  },
+];
 ```
 
 ## When Not To Use It
