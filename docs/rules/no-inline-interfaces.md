@@ -23,10 +23,14 @@ The rule will flag object literals even when they appear within:
 
 - Union types (e.g., `{ a: string } | null`)
 - Intersection types (e.g., `A & { b: number }`)
-- Array types (e.g., `Array<{ a: string }>`)
+- Array types using bracket syntax (e.g., `{ a: string }[]`)
 - Tuple types (e.g., `[{ a: string }, number]`)
 
-**Note:** The rule ignores inline object types within generic type arguments of type references (e.g., `Readonly<{ a: string }>`, `Promise<{ data: number }>`).
+### What the rule ignores
+
+**Classes:** The rule completely ignores anything inside classes, including class properties, method parameters, and method return types. This allows for flexibility in class-based code where inline types may be more appropriate.
+
+**Generic type arguments:** The rule ignores inline object types within generic type arguments of type references (e.g., `Readonly<{ a: string }>`, `Promise<{ data: number }>`, `Array<{ a: string }>`).
 
 ## Examples
 
@@ -106,6 +110,19 @@ const items: string[] = [];
 // Generic type arguments are ignored
 const readonly: Readonly<{ a: string }> = { a: "" };
 const promise: Promise<{ data: number }> = Promise.resolve({ data: 1 });
+
+// Classes are completely ignored
+class User {
+  // Inline types in class properties are allowed
+  data: { name: string; age: number };
+
+  // Inline types in class methods are allowed
+  process(config: { debug: boolean; verbose: boolean }) {}
+
+  getData(): { id: string; value: number } {
+    return { id: "", value: 0 };
+  }
+}
 ```
 
 ## When Not To Use It
