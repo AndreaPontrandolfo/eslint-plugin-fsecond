@@ -15,7 +15,7 @@ export default createEslintRule<Options, MessageIds>({
     schema: [],
     messages: {
       noNonDestructuredOptional:
-        "Move this optional parameter to a destructured parameter.",
+        "Convert this optional parameter to a destructured parameter.",
     },
   },
   defaultOptions: [],
