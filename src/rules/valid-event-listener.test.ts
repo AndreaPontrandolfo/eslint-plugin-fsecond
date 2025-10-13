@@ -1,9 +1,14 @@
-import { test } from "vitest";
-import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
-import rule, { RULE_NAME } from "./valid-event-listener";
+import { run } from "eslint-vitest-rule-tester";
+import typescriptParser from "@typescript-eslint/parser";
+import rule from "./valid-event-listener";
 
-const casesWithRequireUseEventListenerHookOption = {
-  valids: [
+await run({
+  name: "valid-event-listener - {requireUseEventListenerHook: false}",
+  rule,
+  languageOptions: {
+    parser: typescriptParser,
+  },
+  valid: [
     {
       code: `useEffect(() => {
         doThis();
@@ -103,7 +108,7 @@ const casesWithRequireUseEventListenerHookOption = {
       options: [{ requireUseEventListenerHook: false }],
     },
   ],
-  invalids: [
+  invalid: [
     {
       // window.document - inline-if - no-conditional-addeventlistener
       code: `useEffect(() => {
@@ -505,11 +510,16 @@ const casesWithRequireUseEventListenerHookOption = {
         },
       ],
     },
-  ] as const,
-};
+  ],
+});
 
-const casesWithoutOptions = {
-  valids: [
+await run({
+  name: "valid-event-listener - {requireUseEventListenerHook: true}",
+  rule,
+  languageOptions: {
+    parser: typescriptParser,
+  },
+  valid: [
     {
       code: `
       useEventListener('scroll', onScroll)
@@ -539,7 +549,7 @@ const casesWithoutOptions = {
       }, [])`,
     },
   ],
-  invalids: [
+  invalid: [
     {
       code: `
       useEffect(() => {
@@ -568,27 +578,5 @@ const casesWithoutOptions = {
         },
       ],
     },
-  ] as const,
-};
-
-test("valid-event-listener - {requireUseEventListenerHook: false}", () => {
-  const ruleTester: RuleTester = new RuleTester({
-    parser: require.resolve("@typescript-eslint/parser"),
-  });
-
-  ruleTester.run(RULE_NAME, rule, {
-    valid: casesWithRequireUseEventListenerHookOption.valids,
-    invalid: casesWithRequireUseEventListenerHookOption.invalids,
-  });
-});
-
-test("valid-event-listener - {requireUseEventListenerHook: true}", () => {
-  const ruleTester: RuleTester = new RuleTester({
-    parser: require.resolve("@typescript-eslint/parser"),
-  });
-
-  ruleTester.run(RULE_NAME, rule, {
-    valid: casesWithoutOptions.valids,
-    invalid: casesWithoutOptions.invalids,
-  });
+  ],
 });
