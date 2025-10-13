@@ -2,7 +2,7 @@ import { run } from "eslint-vitest-rule-tester";
 import typescriptParser from "@typescript-eslint/parser";
 import rule from "./no-inline-interfaces";
 
-run({
+await run({
   name: "no-inline-interfaces",
   rule,
   languageOptions: {
@@ -440,7 +440,7 @@ const x: B & { a: string } = {};`,
 });
 
 // Test with checkReturnTypes: true
-run({
+await run({
   name: "no-inline-interfaces (checkReturnTypes: true)",
   rule,
   languageOptions: {
@@ -517,7 +517,7 @@ async function process(): Promise<Result> { return { success: true }; }`,
 });
 
 // Test with checkGenericTypes: true
-run({
+await run({
   name: "no-inline-interfaces (checkGenericTypes: true)",
   rule,
   languageOptions: {
@@ -648,7 +648,7 @@ const set: Set<Item> = new Set();`,
 });
 
 // Test with both options enabled
-run({
+await run({
   name: "no-inline-interfaces (all options enabled)",
   rule,
   languageOptions: {

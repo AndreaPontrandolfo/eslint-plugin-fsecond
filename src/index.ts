@@ -1,7 +1,7 @@
+import noInlineInterfaces from "./rules/no-inline-interfaces";
 import preferAliasedPath from "./rules/prefer-aliased-path";
 import preferDestructuredOptionals from "./rules/prefer-destructured-optionals";
 import validEventListener from "./rules/valid-event-listener";
-import noInlineInterfaces from "./rules/no-inline-interfaces";
 
 const plugin = {
   meta: {

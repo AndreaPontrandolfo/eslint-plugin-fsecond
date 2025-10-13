@@ -1,5 +1,5 @@
-import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
 import { test } from "vitest";
+import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
 import rule, { RULE_NAME } from "./valid-event-listener";
 
 const casesWithRequireUseEventListenerHookOption = {

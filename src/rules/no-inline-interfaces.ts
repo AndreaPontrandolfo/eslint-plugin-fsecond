@@ -1,4 +1,4 @@
-import { TSESTree } from "@typescript-eslint/utils";
+import type { TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
 export const RULE_NAME = "no-inline-interfaces";
@@ -19,10 +19,12 @@ function findTypeLiterals(
   results: TSESTree.TSTypeLiteral[] = [],
   checkGenericTypes = false,
 ): TSESTree.TSTypeLiteral[] {
-  if (!type) return results;
+  if (!type) {
+    return results;
+  }
 
   switch (type.type) {
-    case "TSTypeLiteral":
+    case "TSTypeLiteral": {
       results.push(type);
       // Also check for nested type literals inside the members
       type.members.forEach((member) => {
@@ -34,16 +36,19 @@ function findTypeLiterals(
           );
         }
       });
+
       return results;
+    }
 
     case "TSUnionType":
-    case "TSIntersectionType":
+    case "TSIntersectionType": {
       for (const t of type.types) {
         findTypeLiterals(t, results, checkGenericTypes);
       }
       break;
+    }
 
-    case "TSTypeReference":
+    case "TSTypeReference": {
       // Only check generic type arguments if checkGenericTypes is true
       if (checkGenericTypes && type.typeArguments) {
         type.typeArguments.params.forEach((param) => {
@@ -51,38 +56,46 @@ function findTypeLiterals(
         });
       }
       break;
+    }
 
-    case "TSArrayType":
+    case "TSArrayType": {
       findTypeLiterals(type.elementType, results, checkGenericTypes);
       break;
+    }
 
-    case "TSTupleType":
+    case "TSTupleType": {
       type.elementTypes.forEach((elementType) => {
         findTypeLiterals(elementType, results, checkGenericTypes);
       });
       break;
+    }
 
-    case "TSOptionalType":
+    case "TSOptionalType": {
       findTypeLiterals(type.typeAnnotation, results, checkGenericTypes);
       break;
+    }
 
-    case "TSRestType":
+    case "TSRestType": {
       findTypeLiterals(type.typeAnnotation, results, checkGenericTypes);
       break;
+    }
 
-    case "TSTypeOperator":
+    case "TSTypeOperator": {
       findTypeLiterals(type.typeAnnotation, results, checkGenericTypes);
       break;
+    }
 
-    case "TSIndexedAccessType":
+    case "TSIndexedAccessType": {
       findTypeLiterals(type.objectType, results, checkGenericTypes);
       findTypeLiterals(type.indexType, results, checkGenericTypes);
       break;
+    }
 
     // Add other type node cases as needed
-    default:
+    default: {
       // Ignore other type nodes (primitives, etc.)
       break;
+    }
   }
 
   return results;
@@ -116,6 +129,7 @@ export default createEslintRule<Options, MessageIds>({
         additionalProperties: false,
       },
     ],
+    defaultOptions: [],
     messages: {
       noInlineInterfaces:
         "Extract this inline object type into a named interface or type alias and reference it here.",
@@ -133,10 +147,11 @@ export default createEslintRule<Options, MessageIds>({
     const checkReturnTypes = options.checkReturnTypes ?? false;
 
     /**
-     * Check if a node is inside a class
+     * Check if a node is inside a class.
      */
     function isInsideClass(node: TSESTree.Node): boolean {
       let current = node.parent;
+
       while (current) {
         if (
           current.type === "ClassDeclaration" ||
@@ -146,16 +161,18 @@ export default createEslintRule<Options, MessageIds>({
         }
         current = current.parent;
       }
+
       return false;
     }
 
     /**
-     * Report all inline object type literals found in a type annotation
+     * Report all inline object type literals found in a type annotation.
      */
     function reportTypeAnnotation(
       typeAnnotation: TSESTree.TypeNode | undefined,
     ) {
       const literals = findTypeLiterals(typeAnnotation, [], checkGenericTypes);
+
       for (const literal of literals) {
         context.report({ node: literal, messageId: "noInlineInterfaces" });
       }
@@ -163,7 +180,7 @@ export default createEslintRule<Options, MessageIds>({
 
     /**
      * Check a parameter node for type annotations
-     * Handles both direct parameters and parameters with default values (AssignmentPattern)
+     * Handles both direct parameters and parameters with default values (AssignmentPattern).
      */
     function checkParameter(param: TSESTree.Parameter) {
       let nodeToCheck: TSESTree.Node = param;
@@ -177,6 +194,7 @@ export default createEslintRule<Options, MessageIds>({
       const p = nodeToCheck as TSESTree.Node & {
         typeAnnotation?: TSESTree.TSTypeAnnotation;
       };
+
       if (p.typeAnnotation) {
         reportTypeAnnotation(p.typeAnnotation.typeAnnotation);
       }
@@ -185,12 +203,15 @@ export default createEslintRule<Options, MessageIds>({
     return {
       VariableDeclarator(node) {
         // Skip if inside a class
-        if (isInsideClass(node)) return;
+        if (isInsideClass(node)) {
+          return;
+        }
 
         // Check variable type annotation
         const id = node.id as TSESTree.Node & {
           typeAnnotation?: TSESTree.TSTypeAnnotation;
         };
+
         if (id.typeAnnotation) {
           reportTypeAnnotation(id.typeAnnotation.typeAnnotation);
         }
@@ -198,7 +219,9 @@ export default createEslintRule<Options, MessageIds>({
 
       FunctionDeclaration(node) {
         // Skip if inside a class
-        if (isInsideClass(node)) return;
+        if (isInsideClass(node)) {
+          return;
+        }
 
         // Check each parameter's type annotation
         node.params.forEach((param) => {
@@ -213,7 +236,9 @@ export default createEslintRule<Options, MessageIds>({
 
       FunctionExpression(node) {
         // Skip if inside a class
-        if (isInsideClass(node)) return;
+        if (isInsideClass(node)) {
+          return;
+        }
 
         // Check each parameter's type annotation
         node.params.forEach((param) => {
@@ -228,7 +253,9 @@ export default createEslintRule<Options, MessageIds>({
 
       ArrowFunctionExpression(node) {
         // Skip if inside a class
-        if (isInsideClass(node)) return;
+        if (isInsideClass(node)) {
+          return;
+        }
 
         // Check each parameter's type annotation
         node.params.forEach((param) => {

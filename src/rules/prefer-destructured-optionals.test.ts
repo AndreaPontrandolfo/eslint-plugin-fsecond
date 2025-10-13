@@ -1,5 +1,5 @@
-import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
 import { test } from "vitest";
+import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
 import rule, { RULE_NAME } from "./prefer-destructured-optionals";
 
 const valids = [
@@ -90,10 +90,12 @@ test("prefer-destructured-optionals", () => {
 
   ruleTester.run(RULE_NAME, rule, {
     valid: valids,
-    invalid: invalids.map((i) => ({
-      code: i[0],
-      // output: i[1].trim(),
-      errors: [{ messageId: "noNonDestructuredOptional" }],
-    })),
+    invalid: invalids.map((i) => {
+      return {
+        code: i[0],
+        // output: i[1].trim(),
+        errors: [{ messageId: "noNonDestructuredOptional" }],
+      };
+    }),
   });
 });
