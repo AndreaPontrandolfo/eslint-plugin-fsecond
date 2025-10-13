@@ -1,25 +1,28 @@
 {
   "name": "eslint-plugin-fsecond",
-  "description": "ESLint plugin with some opinionated and stylistic rules.",
+  "description": "ESLint plugin with misc rules.",
   "license": "MIT",
+  "version": "0.0.0-development",
   "type": "module",
+  "main": "dist/index.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      }
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "rimraf dist && unbuild",
-    "stub": "unbuild --stub",
-    "test": "vitest",
-    "test:no-inline-interfaces": "vitest run src/rules/no-inline-interfaces.test.ts",
-    "publint": "pnpm dlx publint",
+    "build": "tsdown",
+    "build:watch": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc",
+    "lint": "eslint --max-warnings=0",
+    "knip": "knip",
+    "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip",
     "semantic-release": "pnpm build && semantic-release"
   },
   "author": {
@@ -28,40 +31,53 @@
     "url": "https://github.com/AndreaPontrandolfo"
   },
   "repository": "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond",
+  "bug": "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/issues",
   "keywords": [
     "javascript",
     "typescript",
     "eslint",
     "eslintplugin",
-    "eslint-plugin"
+    "eslint-plugin",
+    "react",
+    "reactjs"
   ],
   "peerDependencies": {
     "eslint": ">=8.23.0",
-    "typescript": ">=4.0.0"
+    "typescript": ">=5.0.0"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.18.2",
+  "files": [
+    "README.md",
+    "package.json",
+    "dist",
+    "docs"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@typescript-eslint/parser": "^8.46.0",
     "@typescript-eslint/utils": "^8.46.0",
-    "minimatch": "^9.0.4",
+    "minimatch": "^10.0.3",
     "read-package-up": "^11.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.4.2",
+    "@arethetypeswrong/core": "^0.18.2",
+    "@types/node": "^24.7.2",
     "eslint": "^9.37.0",
-    "eslint-config-sheriff": "^14.2.0",
-    "eslint-define-config": "^1.22.0",
+    "eslint-config-sheriff": "^29.0.0",
     "eslint-plugin-eslint-plugin": "^7.0.0",
     "eslint-vitest-rule-tester": "^2.2.2",
+    "jiti": "^2.6.1",
+    "knip": "^5.65.0",
     "prettier": "^3.0.1",
-    "rimraf": "^5.0.1",
+    "publint": "^0.3.14",
     "semantic-release": "^22.0.5",
-    "typescript": "^5.4.5",
-    "unbuild": "^2.0.0",
+    "tsdown": "^0.15.6",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
-  },
-  "version": "0.0.0-development",
-  "packageManager": "pnpm@8.14.0+sha512.5d4bf97b349faf1a51318aa1ba887e99d9c36e203dbcb55938a91fddd2454246cb00723d6642f54d463a0f52a2701dadf8de002a37fc613c9cdc94ed5675ddce"
+  }
 }

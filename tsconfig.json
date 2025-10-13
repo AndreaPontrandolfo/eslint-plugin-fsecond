@@ -1,10 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
+  "include": ["src", "eslint.config.ts", "tsdown.config.ts"],
+  "exclude": ["node_modules", "dist", "build", "coverage"],
   "compilerOptions": {
     "composite": false,
-    "baseUrl": ".",
     "target": "ESNext",
-    "module": "ES2022",
+    "module": "Preserve",
     "moduleResolution": "bundler",
     "strict": true,
     "noFallthroughCasesInSwitch": true,
@@ -16,12 +17,12 @@
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "skipLibCheck": true,
+    "noImplicitReturns": true,
     "allowJs": false,
     "checkJs": false,
-    "experimentalDecorators": false,
-    "declaration": false,
-    "declarationMap": false
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "build", "coverage"]
+    "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
+    "noUncheckedSideEffectImports": true,
+    "erasableSyntaxOnly": true,
+    "incremental": true
+  }
 }
