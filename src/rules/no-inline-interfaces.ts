@@ -1,5 +1,5 @@
-/* eslint-disable fsecond/prefer-destructured-optionals */
 /* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
+/* eslint-disable fsecond/prefer-destructured-optionals */
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
@@ -26,7 +26,7 @@ const findTypeLiterals = (
   }
 
   switch (type.type) {
-    case "TSTypeLiteral": {
+    case AST_NODE_TYPES.TSTypeLiteral: {
       results.push(type);
       // Also check for nested type literals inside the members
       type.members.forEach((member) => {
@@ -45,15 +45,15 @@ const findTypeLiterals = (
       return results;
     }
 
-    case "TSUnionType":
-    case "TSIntersectionType": {
+    case AST_NODE_TYPES.TSUnionType:
+    case AST_NODE_TYPES.TSIntersectionType: {
       for (const t of type.types) {
         findTypeLiterals(t, results, checkGenericTypes);
       }
       break;
     }
 
-    case "TSTypeReference": {
+    case AST_NODE_TYPES.TSTypeReference: {
       // Only check generic type arguments if checkGenericTypes is true
       if (checkGenericTypes && type.typeArguments) {
         type.typeArguments.params.forEach((param) => {
@@ -63,40 +63,105 @@ const findTypeLiterals = (
       break;
     }
 
-    case "TSArrayType": {
+    case AST_NODE_TYPES.TSArrayType: {
       findTypeLiterals(type.elementType, results, checkGenericTypes);
       break;
     }
 
-    case "TSTupleType": {
+    case AST_NODE_TYPES.TSTupleType: {
       type.elementTypes.forEach((elementType) => {
         findTypeLiterals(elementType, results, checkGenericTypes);
       });
       break;
     }
 
-    case "TSOptionalType": {
+    case AST_NODE_TYPES.TSOptionalType: {
       findTypeLiterals(type.typeAnnotation, results, checkGenericTypes);
       break;
     }
 
-    case "TSRestType": {
+    case AST_NODE_TYPES.TSRestType: {
       findTypeLiterals(type.typeAnnotation, results, checkGenericTypes);
       break;
     }
 
-    case "TSTypeOperator": {
+    case AST_NODE_TYPES.TSTypeOperator: {
       findTypeLiterals(type.typeAnnotation, results, checkGenericTypes);
       break;
     }
 
-    case "TSIndexedAccessType": {
+    case AST_NODE_TYPES.TSIndexedAccessType: {
       findTypeLiterals(type.objectType, results, checkGenericTypes);
       findTypeLiterals(type.indexType, results, checkGenericTypes);
       break;
     }
 
-    // Add other type node cases as needed
+    case AST_NODE_TYPES.TSConditionalType: {
+      // Check the true and false branches of conditional types
+      findTypeLiterals(type.trueType, results, checkGenericTypes);
+      findTypeLiterals(type.falseType, results, checkGenericTypes);
+      findTypeLiterals(type.checkType, results, checkGenericTypes);
+      findTypeLiterals(type.extendsType, results, checkGenericTypes);
+      break;
+    }
+    case AST_NODE_TYPES.TSConstructorType:
+    case AST_NODE_TYPES.TSFunctionType: {
+      // Check parameter types and return type
+      type.params.forEach((param) => {
+        if (param.type === AST_NODE_TYPES.TSParameterProperty) {
+          findTypeLiterals(
+            param.parameter.typeAnnotation?.typeAnnotation,
+            results,
+            checkGenericTypes,
+          );
+        } else if (param.typeAnnotation) {
+          findTypeLiterals(
+            param.typeAnnotation.typeAnnotation,
+            results,
+            checkGenericTypes,
+          );
+        }
+      });
+      findTypeLiterals(
+        type.returnType?.typeAnnotation,
+        results,
+        checkGenericTypes,
+      );
+      break;
+    }
+    case AST_NODE_TYPES.TSImportType: {
+      // Check type arguments if present
+      if (type.typeArguments) {
+        type.typeArguments.params.forEach((param) => {
+          findTypeLiterals(param, results, checkGenericTypes);
+        });
+      }
+      break;
+    }
+    case AST_NODE_TYPES.TSMappedType: {
+      // Check the mapped type's type annotation
+      findTypeLiterals(type.typeAnnotation, results, checkGenericTypes);
+      if (type.nameType) {
+        findTypeLiterals(type.nameType, results, checkGenericTypes);
+      }
+      break;
+    }
+    case AST_NODE_TYPES.TSNamedTupleMember: {
+      // Check the element type of the named tuple member
+      findTypeLiterals(type.elementType, results, checkGenericTypes);
+      break;
+    }
+    case AST_NODE_TYPES.TSTypePredicate: {
+      // Check the parameter name type and type annotation
+      if (type.typeAnnotation) {
+        findTypeLiterals(
+          type.typeAnnotation.typeAnnotation,
+          results,
+          checkGenericTypes,
+        );
+      }
+      break;
+    }
     default: {
       // Ignore other type nodes (primitives, etc.)
       break;
@@ -165,6 +230,12 @@ export default createEslintRule<Options, MessageIds>({
         "Extract this inline object type into a named interface or type alias and reference it here.",
     },
   },
+  defaultOptions: [
+    {
+      checkGenericTypes: false,
+      checkReturnTypes: false,
+    },
+  ],
   create(context) {
     const options = context.options[0] ?? {};
     const checkGenericTypes = options.checkGenericTypes ?? false;
