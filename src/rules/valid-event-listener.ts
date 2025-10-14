@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
 export const RULE_NAME = "valid-event-listener";
@@ -21,10 +23,15 @@ export default createEslintRule<Options, MessageIds>({
         additionalProperties: false,
         properties: {
           requireUseEventListenerHook: {
+            description: "Require the use of a useEventListener hook",
             type: "boolean",
-            default: true,
           },
         },
+      },
+    ],
+    defaultOptions: [
+      {
+        requireUseEventListenerHook: true,
       },
     ],
     messages: {
@@ -49,6 +56,7 @@ export default createEslintRule<Options, MessageIds>({
       requireUseEventListenerHook: true,
       ...providedFirstOption,
     };
+
     return {
       ExpressionStatement(node) {
         let hasAddEventListener = false;
@@ -57,21 +65,23 @@ export default createEslintRule<Options, MessageIds>({
         let hasAddEventListenerInCondition = false;
         const expression = node?.expression;
 
-        if (expression.type !== "CallExpression") {
+        if (expression.type !== AST_NODE_TYPES.CallExpression) {
           return;
         }
         const calleeName =
           expression?.callee &&
-          expression.callee.type === "Identifier" &&
+          expression.callee.type === AST_NODE_TYPES.Identifier &&
           expression.callee.name;
 
         if (calleeName === "useEffect") {
           const useEffectBodyInternalItems =
             expression?.arguments &&
             expression.arguments.length > 0 &&
-            expression.arguments[0].type === "ArrowFunctionExpression" &&
+            expression.arguments[0].type ===
+              AST_NODE_TYPES.ArrowFunctionExpression &&
             expression.arguments[0].body &&
-            expression.arguments[0].body.type === "BlockStatement" &&
+            expression.arguments[0].body.type ===
+              AST_NODE_TYPES.BlockStatement &&
             expression.arguments[0].body.body;
 
           if (
@@ -81,11 +91,12 @@ export default createEslintRule<Options, MessageIds>({
             useEffectBodyInternalItems.every((element) => {
               const elementType = element.type;
 
-              if (elementType === "IfStatement") {
-                if (element.consequent.type === "BlockStatement") {
+              if (elementType === AST_NODE_TYPES.IfStatement) {
+                if (element.consequent.type === AST_NODE_TYPES.BlockStatement) {
                   element.consequent.body.forEach((ifStatementBodyElement) => {
                     const ifStatementExpression =
-                      ifStatementBodyElement.type === "ExpressionStatement" &&
+                      ifStatementBodyElement.type ===
+                        AST_NODE_TYPES.ExpressionStatement &&
                       ifStatementBodyElement.expression;
                     const ifStatementExpressionCalle =
                       ifStatementExpression.type === "CallExpression" &&
@@ -100,16 +111,14 @@ export default createEslintRule<Options, MessageIds>({
                     ) {
                       hasAddEventListenerInCondition = true;
                     }
-
-                    return hasAddEventListenerInCondition;
                   });
                 }
-                if (element.alternate?.type === "BlockStatement") {
+                if (element.alternate?.type === AST_NODE_TYPES.BlockStatement) {
                   element.alternate.body.forEach(
                     (ifStatementAlternateBodyElement) => {
                       const ifStatementAlternateExpression =
                         ifStatementAlternateBodyElement.type ===
-                          "ExpressionStatement" &&
+                          AST_NODE_TYPES.ExpressionStatement &&
                         ifStatementAlternateBodyElement.expression;
                       const ifStatementAlternateExpressionCalle =
                         ifStatementAlternateExpression.type ===
@@ -126,19 +135,21 @@ export default createEslintRule<Options, MessageIds>({
                       ) {
                         hasAddEventListenerInCondition = true;
                       }
-
-                      return true;
                     },
                   );
                 }
-                if (element.consequent.type === "ExpressionStatement") {
+                if (
+                  element.consequent.type === AST_NODE_TYPES.ExpressionStatement
+                ) {
                   const ifStatementExpression = element.consequent.expression;
 
                   if (
-                    ifStatementExpression.type === "CallExpression" &&
-                    ifStatementExpression.callee.type === "MemberExpression" &&
+                    ifStatementExpression.type ===
+                      AST_NODE_TYPES.CallExpression &&
+                    ifStatementExpression.callee.type ===
+                      AST_NODE_TYPES.MemberExpression &&
                     ifStatementExpression.callee.property.type ===
-                      "Identifier" &&
+                      AST_NODE_TYPES.Identifier &&
                     ifStatementExpression.callee.property.name ===
                       "addEventListener"
                   ) {
@@ -151,16 +162,19 @@ export default createEslintRule<Options, MessageIds>({
               if (hasRemoveEventListener) {
                 return false;
               }
-              if (elementType === "ExpressionStatement") {
+              if (elementType === AST_NODE_TYPES.ExpressionStatement) {
                 const internalExpression = element.expression;
 
                 if (
-                  internalExpression.type === "LogicalExpression" &&
+                  internalExpression.type ===
+                    AST_NODE_TYPES.LogicalExpression &&
                   internalExpression.operator === "&&" &&
-                  internalExpression.right.type === "CallExpression" &&
-                  internalExpression.right.callee.type === "MemberExpression" &&
+                  internalExpression.right.type ===
+                    AST_NODE_TYPES.CallExpression &&
+                  internalExpression.right.callee.type ===
+                    AST_NODE_TYPES.MemberExpression &&
                   internalExpression.right.callee.property.type ===
-                    "Identifier" &&
+                    AST_NODE_TYPES.Identifier &&
                   internalExpression.right.callee.property.name ===
                     "addEventListener"
                 ) {
@@ -169,20 +183,24 @@ export default createEslintRule<Options, MessageIds>({
                   return true;
                 }
                 if (
-                  (internalExpression.type === "ConditionalExpression" &&
-                    internalExpression.consequent.type === "CallExpression" &&
+                  (internalExpression.type ===
+                    AST_NODE_TYPES.ConditionalExpression &&
+                    internalExpression.consequent.type ===
+                      AST_NODE_TYPES.CallExpression &&
                     internalExpression.consequent.callee.type ===
-                      "MemberExpression" &&
+                      AST_NODE_TYPES.MemberExpression &&
                     internalExpression.consequent.callee.property.type ===
-                      "Identifier" &&
+                      AST_NODE_TYPES.Identifier &&
                     internalExpression.consequent.callee.property.name ===
                       "addEventListener") ||
-                  (internalExpression.type === "ConditionalExpression" &&
-                    internalExpression.alternate.type === "CallExpression" &&
+                  (internalExpression.type ===
+                    AST_NODE_TYPES.ConditionalExpression &&
+                    internalExpression.alternate.type ===
+                      AST_NODE_TYPES.CallExpression &&
                     internalExpression.alternate.callee.type ===
-                      "MemberExpression" &&
+                      AST_NODE_TYPES.MemberExpression &&
                     internalExpression.alternate.callee.property.type ===
-                      "Identifier" &&
+                      AST_NODE_TYPES.Identifier &&
                     internalExpression.alternate.callee.property.name ===
                       "addEventListener")
                 ) {
@@ -190,18 +208,24 @@ export default createEslintRule<Options, MessageIds>({
 
                   return true;
                 }
-                if (internalExpression.type !== "CallExpression") {
+                if (internalExpression.type !== AST_NODE_TYPES.CallExpression) {
                   return true;
                 }
                 const internalExpressionCallee = internalExpression.callee;
 
-                if (internalExpressionCallee.type !== "MemberExpression") {
+                if (
+                  internalExpressionCallee.type !==
+                  AST_NODE_TYPES.MemberExpression
+                ) {
                   return true;
                 }
                 const internalExpressionCalleeProperty =
                   internalExpressionCallee.property;
 
-                if (internalExpressionCalleeProperty.type !== "Identifier") {
+                if (
+                  internalExpressionCalleeProperty.type !==
+                  AST_NODE_TYPES.Identifier
+                ) {
                   return true;
                 }
                 const internalExpressionCalleePropertyName =
@@ -215,13 +239,18 @@ export default createEslintRule<Options, MessageIds>({
                   return true;
                 }
               }
-              if (hasAddEventListener && elementType === "ReturnStatement") {
+              if (
+                hasAddEventListener &&
+                elementType === AST_NODE_TYPES.ReturnStatement
+              ) {
                 hasReturnStatement = true;
                 const returnBlockBody =
                   element.argument &&
-                  element.argument.type === "ArrowFunctionExpression" &&
+                  element.argument.type ===
+                    AST_NODE_TYPES.ArrowFunctionExpression &&
                   element.argument.body &&
-                  element.argument.body.type === "BlockStatement" &&
+                  element.argument.body.type ===
+                    AST_NODE_TYPES.BlockStatement &&
                   element.argument.body.body;
 
                 if (returnBlockBody && returnBlockBody.length > 0) {
@@ -230,15 +259,19 @@ export default createEslintRule<Options, MessageIds>({
                       return false;
                     }
                     const returnElementCallee =
-                      returnElement.type === "ExpressionStatement" &&
+                      returnElement.type ===
+                        AST_NODE_TYPES.ExpressionStatement &&
                       returnElement.expression &&
-                      returnElement.expression.type === "CallExpression" &&
+                      returnElement.expression.type ===
+                        AST_NODE_TYPES.CallExpression &&
                       returnElement.expression.callee;
                     const returnElementCalleeProperty =
                       returnElementCallee &&
-                      returnElementCallee.type === "MemberExpression" &&
+                      returnElementCallee.type ===
+                        AST_NODE_TYPES.MemberExpression &&
                       returnElementCallee.property &&
-                      returnElementCallee.property.type === "Identifier" &&
+                      returnElementCallee.property.type ===
+                        AST_NODE_TYPES.Identifier &&
                       returnElementCallee.property.name;
 
                     if (returnElementCalleeProperty === "removeEventListener") {
