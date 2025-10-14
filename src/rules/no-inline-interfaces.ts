@@ -1,3 +1,4 @@
+/* eslint-disable fsecond/prefer-destructured-optionals */
 /* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
@@ -130,7 +131,10 @@ export default createEslintRule<Options, MessageIds>({
     type: "suggestion",
     docs: {
       description:
-        "Disallow inline object type literals in variable and function annotations; extract to a named interface or type alias.",
+        "disallow inline object type literals in variable and function annotations; extract to a named interface or type alias.",
+      url: "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/blob/master/docs/rules/no-inline-interfaces.md",
+      //@ts-expect-error
+      recommended: true,
     },
     schema: [
       {
@@ -140,58 +144,55 @@ export default createEslintRule<Options, MessageIds>({
             type: "boolean",
             description:
               "Check inline object types within generic type arguments (e.g., Array<{ a: string }>)",
-            default: false,
           },
           checkReturnTypes: {
             type: "boolean",
             description:
               "Check inline object types in function return type annotations",
-            default: false,
           },
         },
         additionalProperties: false,
       },
     ],
-    defaultOptions: [],
+    defaultOptions: [
+      {
+        checkGenericTypes: false,
+        checkReturnTypes: false,
+      },
+    ],
     messages: {
       noInlineInterfaces:
         "Extract this inline object type into a named interface or type alias and reference it here.",
     },
   },
-  defaultOptions: [
-    {
-      checkGenericTypes: false,
-      checkReturnTypes: false,
-    },
-  ],
   create(context) {
-    const options = context.options[0] || {};
+    const options = context.options[0] ?? {};
     const checkGenericTypes = options.checkGenericTypes ?? false;
     const checkReturnTypes = options.checkReturnTypes ?? false;
 
     /**
      * Report all inline object type literals found in a type annotation.
      */
-    function reportTypeAnnotation(
+    const reportTypeAnnotation = (
       typeAnnotation: TSESTree.TypeNode | undefined,
-    ) {
+    ) => {
       const literals = findTypeLiterals(typeAnnotation, [], checkGenericTypes);
 
       for (const literal of literals) {
         context.report({ node: literal, messageId: "noInlineInterfaces" });
       }
-    }
+    };
 
     /**
      * Check a parameter node for type annotations
      * Handles both direct parameters and parameters with default values (AssignmentPattern).
      */
-    function checkParameter(param: TSESTree.Parameter) {
+    const checkParameter = (param: TSESTree.Parameter) => {
       let nodeToCheck: TSESTree.Node = param;
 
       // If parameter has a default value, it's wrapped in AssignmentPattern
       // The type annotation is on the 'left' side
-      if (param.type === "AssignmentPattern") {
+      if (param.type === AST_NODE_TYPES.AssignmentPattern) {
         nodeToCheck = param.left;
       }
 
@@ -202,7 +203,7 @@ export default createEslintRule<Options, MessageIds>({
       if (p.typeAnnotation) {
         reportTypeAnnotation(p.typeAnnotation.typeAnnotation);
       }
-    }
+    };
 
     return {
       VariableDeclarator(node) {
