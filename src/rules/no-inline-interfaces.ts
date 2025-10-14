@@ -1,4 +1,5 @@
-import type { TSESTree } from "@typescript-eslint/utils";
+/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
+import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
 export const RULE_NAME = "no-inline-interfaces";
@@ -14,11 +15,11 @@ export type Options = [
  * Recursively find all TSTypeLiteral nodes in a type annotation.
  * Returns all inline object type literals that should be reported.
  */
-function findTypeLiterals(
+const findTypeLiterals = (
   type: TSESTree.TypeNode | undefined,
   results: TSESTree.TSTypeLiteral[] = [],
   checkGenericTypes = false,
-): TSESTree.TSTypeLiteral[] {
+): TSESTree.TSTypeLiteral[] => {
   if (!type) {
     return results;
   }
@@ -28,7 +29,10 @@ function findTypeLiterals(
       results.push(type);
       // Also check for nested type literals inside the members
       type.members.forEach((member) => {
-        if (member.type === "TSPropertySignature" && member.typeAnnotation) {
+        if (
+          member.type === AST_NODE_TYPES.TSPropertySignature &&
+          member.typeAnnotation
+        ) {
           findTypeLiterals(
             member.typeAnnotation.typeAnnotation,
             results,
@@ -99,7 +103,26 @@ function findTypeLiterals(
   }
 
   return results;
-}
+};
+
+/**
+ * Check if a node is inside a class.
+ */
+const isInsideClass = (node: TSESTree.Node): boolean => {
+  let current = node.parent;
+
+  while (current) {
+    if (
+      current.type === AST_NODE_TYPES.ClassDeclaration ||
+      current.type === AST_NODE_TYPES.ClassExpression
+    ) {
+      return true;
+    }
+    current = current.parent;
+  }
+
+  return false;
+};
 
 export default createEslintRule<Options, MessageIds>({
   name: RULE_NAME,
@@ -145,25 +168,6 @@ export default createEslintRule<Options, MessageIds>({
     const options = context.options[0] || {};
     const checkGenericTypes = options.checkGenericTypes ?? false;
     const checkReturnTypes = options.checkReturnTypes ?? false;
-
-    /**
-     * Check if a node is inside a class.
-     */
-    function isInsideClass(node: TSESTree.Node): boolean {
-      let current = node.parent;
-
-      while (current) {
-        if (
-          current.type === "ClassDeclaration" ||
-          current.type === "ClassExpression"
-        ) {
-          return true;
-        }
-        current = current.parent;
-      }
-
-      return false;
-    }
 
     /**
      * Report all inline object type literals found in a type annotation.
