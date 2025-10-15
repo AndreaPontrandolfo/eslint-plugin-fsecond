@@ -1,3 +1,4 @@
+import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
 export const RULE_NAME = "prefer-destructured-optionals";
@@ -22,17 +23,18 @@ export default createEslintRule<Options, MessageIds>({
   },
   defaultOptions: [],
   create(context) {
-    function checkParameters(params) {
+    const checkParameters = (params: TSESTree.Parameter[]) => {
       let isParamObjectInTheMiddle = false;
 
       params.forEach((param) => {
-        if (param.type === "ObjectPattern") {
+        if (param.type === AST_NODE_TYPES.ObjectPattern) {
           isParamObjectInTheMiddle = true;
         }
 
         if (
-          param.left?.type !== "ObjectPattern" &&
-          (param.optional || param.type === "AssignmentPattern")
+          (param.type === AST_NODE_TYPES.AssignmentPattern &&
+            param.left.type !== AST_NODE_TYPES.ObjectPattern) ||
+          (param.type === AST_NODE_TYPES.Identifier && param.optional)
         ) {
           context.report({
             node: param,
@@ -40,14 +42,17 @@ export default createEslintRule<Options, MessageIds>({
           });
         }
 
-        if (isParamObjectInTheMiddle && param.type !== "ObjectPattern") {
+        if (
+          isParamObjectInTheMiddle &&
+          param.type !== AST_NODE_TYPES.ObjectPattern
+        ) {
           context.report({
             node: param,
             messageId: "noNonDestructuredOptional",
           });
         }
       });
-    }
+    };
 
     return {
       FunctionDeclaration(node) {
