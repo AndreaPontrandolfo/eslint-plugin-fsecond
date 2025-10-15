@@ -10,7 +10,9 @@ export default createEslintRule<Options, MessageIds>({
     type: "problem",
     docs: {
       description:
-        "Enforce placing optional parameters on a destructured object instead of the function signature itself",
+        "enforce placing optional parameters on a destructured object instead of the function signature itself",
+      recommended: true,
+      url: "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/blob/master/docs/rules/prefer-destructured-optionals.md",
     },
     schema: [],
     messages: {
