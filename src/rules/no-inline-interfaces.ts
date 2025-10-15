@@ -198,7 +198,6 @@ export default createEslintRule<Options, MessageIds>({
       description:
         "disallow inline object type literals in variable and function annotations; extract to a named interface or type alias.",
       url: "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/blob/master/docs/rules/no-inline-interfaces.md",
-      //@ts-expect-error
       recommended: true,
     },
     schema: [

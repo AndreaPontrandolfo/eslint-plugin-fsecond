@@ -15,7 +15,9 @@ export default createEslintRule<Options, MessageIds>({
   meta: {
     type: "problem",
     docs: {
-      description: "Enforces best practices around addEventListener method.",
+      description: "enforces best practices around addEventListener method.",
+      url: "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/blob/master/docs/rules/valid-event-listener.md",
+      recommended: true,
     },
     schema: [
       {
@@ -51,7 +53,7 @@ export default createEslintRule<Options, MessageIds>({
     },
   ],
   create(context) {
-    const providedFirstOption = context.options[0];
+    const providedFirstOption = context.options[0] ?? {};
     const { requireUseEventListenerHook } = {
       requireUseEventListenerHook: true,
       ...providedFirstOption,
@@ -99,13 +101,17 @@ export default createEslintRule<Options, MessageIds>({
                         AST_NODE_TYPES.ExpressionStatement &&
                       ifStatementBodyElement.expression;
                     const ifStatementExpressionCalle =
-                      ifStatementExpression.type === "CallExpression" &&
+                      ifStatementExpression &&
+                      ifStatementExpression.type ===
+                        AST_NODE_TYPES.CallExpression &&
                       ifStatementExpression.callee;
 
                     if (
-                      ifStatementExpressionCalle.type === "MemberExpression" &&
+                      ifStatementExpressionCalle &&
+                      ifStatementExpressionCalle.type ===
+                        AST_NODE_TYPES.MemberExpression &&
                       ifStatementExpressionCalle.property.type ===
-                        "Identifier" &&
+                        AST_NODE_TYPES.Identifier &&
                       ifStatementExpressionCalle.property.name ===
                         "addEventListener"
                     ) {
@@ -121,15 +127,17 @@ export default createEslintRule<Options, MessageIds>({
                           AST_NODE_TYPES.ExpressionStatement &&
                         ifStatementAlternateBodyElement.expression;
                       const ifStatementAlternateExpressionCalle =
+                        ifStatementAlternateExpression &&
                         ifStatementAlternateExpression.type ===
-                          "CallExpression" &&
+                          AST_NODE_TYPES.CallExpression &&
                         ifStatementAlternateExpression.callee;
 
                       if (
+                        ifStatementAlternateExpressionCalle &&
                         ifStatementAlternateExpressionCalle.type ===
-                          "MemberExpression" &&
+                          AST_NODE_TYPES.MemberExpression &&
                         ifStatementAlternateExpressionCalle.property.type ===
-                          "Identifier" &&
+                          AST_NODE_TYPES.Identifier &&
                         ifStatementAlternateExpressionCalle.property.name ===
                           "addEventListener"
                       ) {
