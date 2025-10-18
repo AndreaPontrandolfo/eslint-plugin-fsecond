@@ -1,11 +1,11 @@
 # ESLINT PLUGIN FSECOND
 
-ESLint plugin with some opinionated and stylistic rules.
+ESLint plugin with some opinionated rules, useful in JavaScript, TypeScript and React projects.
 
 ## Description
 
-This ESLint plugin currently contains 2 rules:
+### Rules
 
 - [prefer-destructured-optionals](./docs/rules/prefer-destructured-optionals.md)
 - [valid-event-listener](./docs/rules/valid-event-listener.md)
-- [prefer-aliased-path](./docs/rules/prefer-aliased-path.md)
+- [no-inline-interfaces](./docs/rules/no-inline-interfaces.md)
