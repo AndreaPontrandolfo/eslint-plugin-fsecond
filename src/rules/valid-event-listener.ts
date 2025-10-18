@@ -228,7 +228,8 @@ export default createEslintRule<Options, MessageIds>({
   meta: {
     type: "problem",
     docs: {
-      description: "enforces best practices around addEventListener method.",
+      description:
+        "enforces best practices around addEventListener method in React components.",
       url: "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/blob/master/docs/rules/valid-event-listener.md",
       recommended: true,
     },
@@ -251,13 +252,13 @@ export default createEslintRule<Options, MessageIds>({
     ],
     messages: {
       "required-cleanup":
-        "Missing a cleanup function for the addEventListener.",
+        "Missing a cleanup function for the addEventListener in React useEffect.",
       "required-remove-eventListener":
-        "Missing a matching removeEventListener.",
+        "Missing a matching removeEventListener in the React useEffect cleanup.",
       "no-conditional-addeventlistener":
-        "Don't wrap a addEventListener in a condition.",
+        "Don't wrap addEventListener in a condition in React components.",
       "require-use-event-listener-hook":
-        "Use a useEventListener hook from a hooks library instead of manually adding and removing event listeners.",
+        "Use a useEventListener hook from a React hooks library instead of manually adding and removing event listeners.",
     },
   },
   defaultOptions: [
