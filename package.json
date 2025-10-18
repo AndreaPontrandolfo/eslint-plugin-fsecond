@@ -17,6 +17,9 @@
   "scripts": {
     "build": "tsdown",
     "build:watch": "tsdown --watch",
+    "format": "prettier --write .",
+    "docs:update": "pnpm build && eslint-doc-generator && pnpm format",
+    "docs: lint": "pnpm eslint-doc-generator --check",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc",
@@ -69,6 +72,7 @@
     "@types/node": "^24.7.2",
     "eslint": "^9.37.0",
     "eslint-config-sheriff": "^29.0.0",
+    "eslint-doc-generator": "^2.3.0",
     "eslint-plugin-eslint-plugin": "^7.0.0",
     "eslint-vitest-rule-tester": "^2.2.2",
     "jiti": "^2.6.1",
