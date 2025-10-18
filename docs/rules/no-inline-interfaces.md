@@ -1,17 +1,8 @@
-# Disallow inline object type literals in annotations
+<!-- end auto-generated rule header -->
+
+## Description
 
 This rule enforces extracting inline object type literals into named interfaces or type aliases, rather than defining them inline in variable declarations, function parameters, or return types.
-
-## Rationale
-
-Extracting object types into named interfaces or type aliases:
-
-- Improves code readability and maintainability
-- Encourages type reusability across the codebase
-- Makes complex types easier to understand and document
-- Facilitates refactoring and type updates
-
-## Rule Details
 
 This rule flags inline object type literals (`{ prop: type }`) when used in:
 
@@ -26,7 +17,19 @@ The rule will flag object literals even when they appear within:
 - Array types using bracket syntax (e.g., `{ a: string }[]`)
 - Tuple types (e.g., `[{ a: string }, number]`)
 
-### Options
+## Rationale
+
+Extracting object types into named interfaces or type aliases:
+
+- Improves code readability and maintainability
+- Encourages type reusability across the codebase
+- Makes complex types easier to understand and document
+- Facilitates refactoring and type updates
+
+## Options
+
+<!-- begin auto-generated rule options list -->
+<!-- end auto-generated rule options list -->
 
 This rule accepts an options object with the following properties:
 
@@ -37,19 +40,19 @@ This rule accepts an options object with the following properties:
 }
 ```
 
-#### `checkGenericTypes` (default: `false`)
+### `checkGenericTypes` (default: `false`)
 
 When `false` (default), the rule ignores inline object types within generic type arguments of type references (e.g., `Readonly<{ a: string }>`, `Promise<{ data: number }>`, `Array<{ a: string }>`).
 
 When `true`, the rule will flag inline object types even inside generic type arguments.
 
-#### `checkReturnTypes` (default: `false`)
+### `checkReturnTypes` (default: `false`)
 
 When `false` (default), the rule does NOT check function return type annotations.
 
 When `true`, the rule will flag inline object types in function return types.
 
-### What the rule always ignores
+## What the rule always ignores
 
 **Classes:** The rule completely ignores anything inside classes, including class properties, method parameters, and method return types. This allows for flexibility in class-based code where inline types may be more appropriate.
 

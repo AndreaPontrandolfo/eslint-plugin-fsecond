@@ -1,6 +1,14 @@
-# Prefer Destructured Optionals
+<!-- end auto-generated rule header -->
+
+## Description
 
 Enforces a strict function parameter style where required parameters come first, followed by an optional destructured object parameter as the final parameter.
+
+This rule enforces two key constraints:
+
+1. **No inline optional parameters** - Optional parameters (those with `?` or default values) must NOT appear directly in the function signature. They must be moved into a destructured object parameter.
+
+2. **Destructured object must be last** - If a destructured object parameter is present, it must be the final parameter (nothing can come after it).
 
 ## Rationale
 
@@ -11,13 +19,10 @@ This rule promotes consistency and clarity in function signatures by:
 - **Better maintainability** - Adding or removing optional parameters doesn't affect required parameters. It's easier to maintain a function if the changing the order of the parameters doesn't affect the function signature.
 - **Improved type safety** - Optional parameters in a destructured object are easier to type correctly
 
-## Details
+## Options
 
-This rule enforces two key constraints:
-
-1. **No inline optional parameters** - Optional parameters (those with `?` or default values) must NOT appear directly in the function signature. They must be moved into a destructured object parameter.
-
-2. **Destructured object must be last** - If a destructured object parameter is present, it must be the final parameter (nothing can come after it).
+<!-- begin auto-generated rule options list -->
+<!-- end auto-generated rule options list -->
 
 ## Fail
 
