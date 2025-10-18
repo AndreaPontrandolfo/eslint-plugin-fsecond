@@ -1,3 +1,7 @@
+# Enforce placing optional parameters on a destructured object instead of the function signature itself (`fsecond/prefer-destructured-optionals`)
+
+💼 This rule is enabled in the ✅ `recommended` config.
+
 <!-- end auto-generated rule header -->
 
 ## Description
@@ -19,14 +23,11 @@ This rule promotes consistency and clarity in function signatures by:
 - **Better maintainability** - Adding or removing optional parameters doesn't affect required parameters. It's easier to maintain a function if the changing the order of the parameters doesn't affect the function signature.
 - **Improved type safety** - Optional parameters in a destructured object are easier to type correctly
 
-## Options
+## Examples
 
-<!-- begin auto-generated rule options list -->
-<!-- end auto-generated rule options list -->
+### ❌ Invalid
 
-## Fail
-
-### Optional parameter in signature
+#### Optional parameter in signature
 
 ```js
 const myFn = (param1, optionalParam = "x") => {
@@ -40,7 +41,7 @@ function process(name, callback?) {
 }
 ```
 
-### Destructured object not at the end
+#### Destructured object not at the end
 
 ```js
 const myFn = (param1, { optionalParam1 = "default" }, param2) => {
@@ -48,7 +49,7 @@ const myFn = (param1, { optionalParam1 = "default" }, param2) => {
 };
 ```
 
-### Multiple optional parameters in signature
+#### Multiple optional parameters in signature
 
 ```js
 const myFn = (param1, optionalParam1?, optionalParam2 = "default") => {
@@ -56,9 +57,9 @@ const myFn = (param1, optionalParam1?, optionalParam2 = "default") => {
 };
 ```
 
-## Pass
+### ✅ Valid
 
-### Required parameters followed by destructured object
+#### Required parameters followed by destructured object
 
 ```js
 const myFn = (param1, param2, { optionalParam = "x" }) => {
@@ -66,7 +67,7 @@ const myFn = (param1, param2, { optionalParam = "x" }) => {
 };
 ```
 
-### Multiple optional parameters in destructured object
+#### Multiple optional parameters in destructured object
 
 ```js
 const myFn = (
@@ -78,7 +79,7 @@ const myFn = (
 };
 ```
 
-### Only destructured optional parameters
+#### Only destructured optional parameters
 
 ```js
 const myFn = ({ optionalParam1 = "default", optionalParam2 = 42 } = {}) => {
@@ -86,7 +87,7 @@ const myFn = ({ optionalParam1 = "default", optionalParam2 = 42 } = {}) => {
 };
 ```
 
-### No optional parameters (all required)
+#### No optional parameters (all required)
 
 ```js
 const myFn = (param1, param2) => {
@@ -94,7 +95,7 @@ const myFn = (param1, param2) => {
 };
 ```
 
-### With TypeScript type annotations
+#### With TypeScript type annotations
 
 ```ts
 const writeJSONToFile = (

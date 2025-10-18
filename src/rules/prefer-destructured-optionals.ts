@@ -8,7 +8,7 @@ export type Options = [];
 export default createEslintRule<Options, MessageIds>({
   name: RULE_NAME,
   meta: {
-    type: "problem",
+    type: "suggestion",
     docs: {
       description:
         "enforce placing optional parameters on a destructured object instead of the function signature itself",

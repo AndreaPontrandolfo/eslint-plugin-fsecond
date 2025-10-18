@@ -1,3 +1,7 @@
+# Disallow inline object type literals in variable and function annotations; extract to a named interface or type alias (`fsecond/no-inline-interfaces`)
+
+💼 This rule is enabled in the ✅ `recommended` config.
+
 <!-- end auto-generated rule header -->
 
 ## Description
@@ -17,6 +21,10 @@ The rule will flag object literals even when they appear within:
 - Array types using bracket syntax (e.g., `{ a: string }[]`)
 - Tuple types (e.g., `[{ a: string }, number]`)
 
+### What the rule always ignores
+
+**Classes:** The rule completely ignores anything inside classes, including class properties, method parameters, and method return types. This allows for flexibility in class-based code where inline types may be more appropriate.
+
 ## Rationale
 
 Extracting object types into named interfaces or type aliases:
@@ -29,6 +37,12 @@ Extracting object types into named interfaces or type aliases:
 ## Options
 
 <!-- begin auto-generated rule options list -->
+
+| Name                | Description                                                                          | Type    |
+| :------------------ | :----------------------------------------------------------------------------------- | :------ |
+| `checkGenericTypes` | Check inline object types within generic type arguments (e.g., Array<{ a: string }>) | Boolean |
+| `checkReturnTypes`  | Check inline object types in function return type annotations                        | Boolean |
+
 <!-- end auto-generated rule options list -->
 
 This rule accepts an options object with the following properties:
@@ -51,10 +65,6 @@ When `true`, the rule will flag inline object types even inside generic type arg
 When `false` (default), the rule does NOT check function return type annotations.
 
 When `true`, the rule will flag inline object types in function return types.
-
-## What the rule always ignores
-
-**Classes:** The rule completely ignores anything inside classes, including class properties, method parameters, and method return types. This allows for flexibility in class-based code where inline types may be more appropriate.
 
 ## Examples
 

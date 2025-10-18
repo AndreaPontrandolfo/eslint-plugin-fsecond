@@ -1,6 +1,6 @@
 import { ESLintUtils } from "@typescript-eslint/utils";
 
-interface FsecondDocs {
+export interface FsecondDocs {
   recommended: boolean;
 }
 

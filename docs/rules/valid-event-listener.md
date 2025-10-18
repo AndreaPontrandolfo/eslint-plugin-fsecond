@@ -1,3 +1,7 @@
+# Enforces best practices around addEventListener method in React components (`fsecond/valid-event-listener`)
+
+💼 This rule is enabled in the ✅ `recommended` config.
+
 <!-- end auto-generated rule header -->
 
 ## Description
@@ -25,6 +29,11 @@ This rule promotes consistency and correctness in event listener management in R
 ## Options
 
 <!-- begin auto-generated rule options list -->
+
+| Name                          | Description                                | Type    |
+| :---------------------------- | :----------------------------------------- | :------ |
+| `requireUseEventListenerHook` | Require the use of a useEventListener hook | Boolean |
+
 <!-- end auto-generated rule options list -->
 
 ### requireUseEventListenerHook
@@ -36,7 +45,9 @@ A lot of React hooks libraries provide a `useEventListener` hook that simplifies
 
 This option is set to `true` by default. Setting this to false will disable this check but the other checks around addEventListener usage correctness in React components will still be enforced.
 
-## Fail
+## Examples
+
+### ❌ Invalid
 
 ```js
 // eslint fsecond/valid-event-listener: [2, {"requireUseEventListenerHook": false}]
@@ -116,7 +127,7 @@ useEffect(() => {
 }, []);
 ```
 
-## Pass
+### ✅ Valid
 
 ```js
 // eslint fsecond/valid-event-listener: 2
@@ -164,3 +175,8 @@ useEffect(() => {
   };
 }, []);
 ```
+
+## When Not To Use
+
+- If you're not using React
+- If you are not using React hooks
