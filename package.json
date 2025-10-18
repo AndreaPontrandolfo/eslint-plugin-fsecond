@@ -26,6 +26,7 @@
     "lint": "eslint --max-warnings=0",
     "knip": "knip",
     "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip && docs:lint",
+    "release:dry-run": "pnpm build && semantic-release --dry-run",
     "semantic-release": "pnpm build && semantic-release"
   },
   "author": {
@@ -82,7 +83,7 @@
     "knip": "^5.65.0",
     "prettier": "^3.0.1",
     "publint": "^0.3.14",
-    "semantic-release": "^22.0.5",
+    "semantic-release": "^25.0.0",
     "tsdown": "^0.15.6",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"

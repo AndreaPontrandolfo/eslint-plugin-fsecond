@@ -6,7 +6,7 @@ import validEventListener from "./rules/valid-event-listener";
 const plugin = {
   meta: {
     name: "eslint-plugin-fsecond",
-    version: "1.1.0",
+    version: "2.0.0",
   },
   configs: {},
   rules: {
