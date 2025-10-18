@@ -26,7 +26,6 @@
     "lint": "eslint --max-warnings=0",
     "knip": "knip",
     "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip && docs:lint",
-    "release:dry-run": "pnpm build && semantic-release --dry-run",
     "semantic-release": "pnpm build && semantic-release"
   },
   "author": {
