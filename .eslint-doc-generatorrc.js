@@ -3,7 +3,7 @@ const config = {
   ruleListColumns: [
     "name",
     "description",
-    "configs",
+    "configsError",
     "type",
     "options",
     "fixable",
