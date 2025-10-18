@@ -8,6 +8,7 @@ const plugin = {
     name: "eslint-plugin-fsecond",
     version: "1.1.0",
   },
+  configs: {},
   rules: {
     "prefer-destructured-optionals": preferDestructuredOptionals,
     "valid-event-listener": validEventListener,
@@ -15,5 +16,21 @@ const plugin = {
     "no-inline-interfaces": noInlineInterfaces,
   },
 };
+
+// assign configs here so we can reference `plugin`
+Object.assign(plugin.configs, {
+  recommended: [
+    {
+      plugins: {
+        fsecond: plugin,
+      },
+      rules: {
+        "fsecond/prefer-destructured-optionals": "error",
+        "fsecond/valid-event-listener": "error",
+        "fsecond/no-inline-interfaces": "error",
+      },
+    },
+  ],
+});
 
 export default plugin;
