@@ -580,3 +580,50 @@ await run({
     },
   ],
 });
+
+await run({
+  name: "valid-event-listener - {requireUseEventListenerHook: false} - with once option",
+  rule,
+  languageOptions: {
+    parser: typescriptParser,
+  },
+  valid: [
+    {
+      code: `useEffect(() => {
+        window.addEventListener("keydown", handleUserKeyPress, { once: true });
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
+        document.addEventListener("click", handleClick, { once: true });
+        window.addEventListener("scroll", handleScroll, { once: true });
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
+        const signal = AbortSignal.timeout(5000);
+        window.addEventListener("abort", handleAbort, { once: true });
+        return () => {
+          // Optional: cleanup if needed
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+  ],
+  invalid: [
+    {
+      code: `useEffect(() => {
+        window.addEventListener("keydown", handleUserKeyPress);
+        document.addEventListener("click", handleClick, { once: true });
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+  ],
+});

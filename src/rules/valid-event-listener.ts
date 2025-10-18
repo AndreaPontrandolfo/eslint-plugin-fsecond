@@ -223,6 +223,56 @@ const hasConditionalAddEventListener = (
   return false;
 };
 
+/**
+ * Helper function: Check if addEventListener call has \{ once: true \} option.
+ */
+const hasOnceOption = (call: unknown): boolean => {
+  if (!isEventListenerMethodCall(call, "addEventListener")) {
+    return false;
+  }
+
+  const optionsArgument = call.arguments[2];
+
+  if (
+    optionsArgument &&
+    optionsArgument.type === AST_NODE_TYPES.ObjectExpression
+  ) {
+    for (const property of optionsArgument.properties) {
+      if (
+        property.type === AST_NODE_TYPES.Property &&
+        property.key.type === AST_NODE_TYPES.Identifier &&
+        property.key.name === "once" &&
+        property.value.type === AST_NODE_TYPES.Literal &&
+        property.value.value === true
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+/**
+ * Helper function: Check if there's any addEventListener in block that is not once.
+ * Returns true if at least one addEventListener does NOT have \{ once: true \}.
+ */
+const hasNonOnceAddEventListenerInBlock = (
+  statements: TSESTree.Statement[],
+): boolean => {
+  for (const statement of statements) {
+    if (
+      statement.type === AST_NODE_TYPES.ExpressionStatement &&
+      isEventListenerMethodCall(statement.expression, "addEventListener") &&
+      !hasOnceOption(statement.expression)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export default createEslintRule<Options, MessageIds>({
   name: RULE_NAME,
   meta: {
@@ -341,6 +391,16 @@ export default createEslintRule<Options, MessageIds>({
 
         // Check for cleanup
         const hasReturnStmt = hasReturnStatement(useEffectBodyInternalItems);
+        const hasNonOnceAddEventListener = hasNonOnceAddEventListenerInBlock(
+          useEffectBodyInternalItems,
+        );
+
+        // If all addEventListener calls use { once: true }, no cleanup is needed
+        // This is safe for AbortSignal patterns where the event fires at most once
+        if (!hasNonOnceAddEventListener) {
+          return;
+        }
+
         const hasRemoveEventListener = findRemoveEventListenerInCleanup(
           useEffectBodyInternalItems,
         );

@@ -9,6 +9,8 @@ This rule enforces best practices for event listeners in React components:
 - every addEventListener should have a matching removeEventListener in the returned cleanup function of the same useEffect block
 - addEventListener methods should not be called conditionally in React components
 
+**Note on AbortSignal:** If all `addEventListener` calls in a useEffect use the `{ once: true }` option, the cleanup requirement is waived. This is safe for patterns like `AbortSignal.abort()` events, which fire at most once and automatically remove themselves after the first invocation.
+
 ## Options
 
 ### requireUseEventListenerHook
