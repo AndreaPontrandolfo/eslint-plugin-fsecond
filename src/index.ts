@@ -25,9 +25,12 @@ Object.assign(plugin.configs, {
         fsecond: plugin,
       },
       rules: {
-        "fsecond/prefer-destructured-optionals": "error",
-        "fsecond/valid-event-listener": "error",
-        "fsecond/no-inline-interfaces": "error",
+        "fsecond/prefer-destructured-optionals": 2,
+        "fsecond/valid-event-listener": 2,
+        "fsecond/no-inline-interfaces": [
+          2,
+          { checkGenericTypes: false, checkReturnTypes: true },
+        ],
       },
     },
   ],
