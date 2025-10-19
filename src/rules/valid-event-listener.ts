@@ -9,7 +9,11 @@ type MessageIds =
   | "required-remove-eventListener"
   | "no-conditional-addeventlistener"
   | "require-use-event-listener-hook";
-type Options = unknown[];
+type Options = [
+  {
+    requireUseEventListenerHook?: boolean;
+  }?,
+];
 
 /**
  * Helper function: Check if a node is a method call to addEventListener or removeEventListener.
