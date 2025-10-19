@@ -1,36 +1,37 @@
+import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
-export const RULE_NAME = "prefer-destructured-optionals";
-export type MessageIds = "noNonDestructuredOptional";
-export type Options = [];
+const RULE_NAME = "prefer-destructured-optionals";
+
+type MessageIds = "noNonDestructuredOptional";
+type Options = [];
 
 export default createEslintRule<Options, MessageIds>({
   name: RULE_NAME,
   meta: {
-    type: "problem",
+    type: "suggestion",
     docs: {
       description:
-        "Enforce placing optional parameters on a destructured object instead of the function signature itself",
+        "enforce placing optional parameters on a destructured object instead of the function signature itself",
+      recommended: true,
+      url: "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/blob/master/docs/rules/prefer-destructured-optionals.md",
     },
     schema: [],
     messages: {
       noNonDestructuredOptional:
-        "Move this optional parameter to a destructured parameter.",
+        "Convert this optional parameter to a destructured parameter.",
     },
   },
   defaultOptions: [],
   create(context) {
-    function checkParameters(params) {
+    const checkParameters = (params: TSESTree.Parameter[]) => {
       let isParamObjectInTheMiddle = false;
 
       params.forEach((param) => {
-        if (param.type === "ObjectPattern") {
-          isParamObjectInTheMiddle = true;
-        }
-
         if (
-          param.left?.type !== "ObjectPattern" &&
-          (param.optional || param.type === "AssignmentPattern")
+          (param.type === AST_NODE_TYPES.AssignmentPattern &&
+            param.left.type !== AST_NODE_TYPES.ObjectPattern) ||
+          (param.type === AST_NODE_TYPES.Identifier && param.optional)
         ) {
           context.report({
             node: param,
@@ -38,14 +39,25 @@ export default createEslintRule<Options, MessageIds>({
           });
         }
 
-        if (isParamObjectInTheMiddle && param.type !== "ObjectPattern") {
+        if (
+          isParamObjectInTheMiddle &&
+          param.type !== AST_NODE_TYPES.ObjectPattern
+        ) {
           context.report({
             node: param,
             messageId: "noNonDestructuredOptional",
           });
         }
+
+        if (
+          param.type === AST_NODE_TYPES.ObjectPattern ||
+          (param.type === AST_NODE_TYPES.AssignmentPattern &&
+            param.left.type === AST_NODE_TYPES.ObjectPattern)
+        ) {
+          isParamObjectInTheMiddle = true;
+        }
       });
-    }
+    };
 
     return {
       FunctionDeclaration(node) {

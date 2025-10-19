@@ -1,9 +1,14 @@
-import { RuleTester } from "@typescript-eslint/utils/ts-eslint";
-import { test } from "vitest";
-import rule, { RULE_NAME } from "./valid-event-listener";
+import { run } from "eslint-vitest-rule-tester";
+import typescriptParser from "@typescript-eslint/parser";
+import rule from "./valid-event-listener";
 
-const casesWithRequireUseEventListenerHookOption = {
-  valids: [
+await run({
+  name: "valid-event-listener - {requireUseEventListenerHook: false}",
+  rule,
+  languageOptions: {
+    parser: typescriptParser,
+  },
+  valid: [
     {
       code: `useEffect(() => {
         doThis();
@@ -15,6 +20,102 @@ const casesWithRequireUseEventListenerHookOption = {
         doOtherStuff();
         doSomeOtherStuff();
         return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Test React.useEffect
+    {
+      code: `React.useEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Test useLayoutEffect
+    {
+      code: `useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Test React.useLayoutEffect
+    {
+      code: `React.useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Test function expression (not arrow function)
+    {
+      code: `useEffect(function() {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return function() {
           doThatBefore();
           doMoreOfThatBefore();
           if (x) {
@@ -102,8 +203,68 @@ const casesWithRequireUseEventListenerHookOption = {
       }, [])`,
       options: [{ requireUseEventListenerHook: false }],
     },
+    // Optional chaining - element?.addEventListener with cleanup
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+        return () => {
+          element?.removeEventListener("click", handleClick);
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Optional chaining - nested property access with optional chaining
+    {
+      code: `useEffect(() => {
+        obj?.element?.addEventListener("keydown", handleKeyDown);
+        return () => {
+          obj?.element?.removeEventListener("keydown", handleKeyDown);
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - direct removeEventListener call
+    {
+      code: `useEffect(() => {
+        window.addEventListener("click", handleClick);
+        return () => window.removeEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - document removeEventListener
+    {
+      code: `useEffect(() => {
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - element removeEventListener
+    {
+      code: `useEffect(() => {
+        element.addEventListener("scroll", handleScroll);
+        return () => element.removeEventListener("scroll", handleScroll);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - optional chaining
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+        return () => element?.removeEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - has removeEventListener (even if on different object - rule can't verify semantic match)
+    {
+      code: `useEffect(() => {
+        window.addEventListener("click", handleClick);
+        return () => element.removeEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
   ],
-  invalids: [
+  invalid: [
     {
       // window.document - inline-if - no-conditional-addeventlistener
       code: `useEffect(() => {
@@ -314,6 +475,82 @@ const casesWithRequireUseEventListenerHookOption = {
         },
       ],
     },
+    // React.useEffect - required-cleanup
+    {
+      code: `React.useEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // useLayoutEffect - required-cleanup
+    {
+      code: `useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // React.useLayoutEffect - required-cleanup
+    {
+      code: `React.useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // Function expression - required-cleanup
+    {
+      code: `useEffect(function() {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
     {
       // window - required-remove-eventListener
       code: `useEffect(() => {
@@ -505,11 +742,86 @@ const casesWithRequireUseEventListenerHookOption = {
         },
       ],
     },
-  ] as const,
-};
+    {
+      code: `useEffect(() => {
+        window.document.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThat();
+          window.document.addEventListener("keydown", handleUserKeyPress);
+          doMoreOfThat();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    // Optional chaining - missing cleanup
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // Optional chaining - missing removeEventListener
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+        return () => {
+          doOtherStuff();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    // Optional chaining - conditional addEventListener
+    {
+      code: `useEffect(() => {
+        element && element?.addEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    // Arrow function with expression body - missing removeEventListener
+    {
+      code: `useEffect(() => {
+        window.addEventListener("click", handleClick);
+        return () => doSomethingElse();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+  ],
+});
 
-const casesWithoutOptions = {
-  valids: [
+await run({
+  name: "valid-event-listener - {requireUseEventListenerHook: true}",
+  rule,
+  languageOptions: {
+    parser: typescriptParser,
+  },
+  valid: [
     {
       code: `
       useEventListener('scroll', onScroll)
@@ -539,7 +851,7 @@ const casesWithoutOptions = {
       }, [])`,
     },
   ],
-  invalids: [
+  invalid: [
     {
       code: `
       useEffect(() => {
@@ -568,27 +880,52 @@ const casesWithoutOptions = {
         },
       ],
     },
-  ] as const,
-};
-
-test("valid-event-listener - {requireUseEventListenerHook: false}", () => {
-  const ruleTester: RuleTester = new RuleTester({
-    parser: require.resolve("@typescript-eslint/parser"),
-  });
-
-  ruleTester.run(RULE_NAME, rule, {
-    valid: casesWithRequireUseEventListenerHookOption.valids,
-    invalid: casesWithRequireUseEventListenerHookOption.invalids,
-  });
+  ],
 });
 
-test("valid-event-listener - {requireUseEventListenerHook: true}", () => {
-  const ruleTester: RuleTester = new RuleTester({
-    parser: require.resolve("@typescript-eslint/parser"),
-  });
-
-  ruleTester.run(RULE_NAME, rule, {
-    valid: casesWithoutOptions.valids,
-    invalid: casesWithoutOptions.invalids,
-  });
+await run({
+  name: "valid-event-listener - {requireUseEventListenerHook: false} - with once option",
+  rule,
+  languageOptions: {
+    parser: typescriptParser,
+  },
+  valid: [
+    {
+      code: `useEffect(() => {
+        window.addEventListener("keydown", handleUserKeyPress, { once: true });
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
+        document.addEventListener("click", handleClick, { once: true });
+        window.addEventListener("scroll", handleScroll, { once: true });
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    {
+      code: `useEffect(() => {
+        const signal = AbortSignal.timeout(5000);
+        window.addEventListener("abort", handleAbort, { once: true });
+        return () => {
+          // Optional: cleanup if needed
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+  ],
+  invalid: [
+    {
+      code: `useEffect(() => {
+        window.addEventListener("keydown", handleUserKeyPress);
+        document.addEventListener("click", handleClick, { once: true });
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+  ],
 });
