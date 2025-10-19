@@ -50,6 +50,31 @@ const isRemoveEventListenerCall = (node: unknown): boolean => {
 };
 
 /**
+ * Helper function: Check if a call expression is useEffect or useLayoutEffect.
+ */
+const isUseEffectOrUseLayoutEffectCall = (
+  node: TSESTree.CallExpression,
+): boolean => {
+  const { callee } = node;
+
+  // Direct call: useEffect() or useLayoutEffect()
+  if (callee.type === AST_NODE_TYPES.Identifier) {
+    return callee.name === "useEffect" || callee.name === "useLayoutEffect";
+  }
+
+  // Member expression call: React.useEffect() or React.useLayoutEffect()
+  if (callee.type === AST_NODE_TYPES.MemberExpression && !callee.computed) {
+    return (
+      callee.property.type === AST_NODE_TYPES.Identifier &&
+      (callee.property.name === "useEffect" ||
+        callee.property.name === "useLayoutEffect")
+    );
+  }
+
+  return false;
+};
+
+/**
  * Helper function: Check if an expression statement contains a conditional addEventListener.
  */
 const isConditionalAddEventListener = (node: TSESTree.Statement): boolean => {
@@ -174,7 +199,9 @@ const findRemoveEventListenerInCleanup = (
     const cleanupFunction = statement.argument;
 
     if (
-      cleanupFunction?.type === AST_NODE_TYPES.ArrowFunctionExpression &&
+      cleanupFunction &&
+      (cleanupFunction.type === AST_NODE_TYPES.ArrowFunctionExpression ||
+        cleanupFunction.type === AST_NODE_TYPES.FunctionExpression) &&
       cleanupFunction.body?.type === AST_NODE_TYPES.BlockStatement &&
       cleanupFunction.body.body &&
       findRemoveEventListenerInBlock(cleanupFunction.body.body)
@@ -193,7 +220,9 @@ const hasReturnStatement = (statements: TSESTree.Statement[]): boolean => {
   for (const statement of statements) {
     if (
       statement.type === AST_NODE_TYPES.ReturnStatement &&
-      statement.argument?.type === AST_NODE_TYPES.ArrowFunctionExpression
+      statement.argument &&
+      (statement.argument.type === AST_NODE_TYPES.ArrowFunctionExpression ||
+        statement.argument.type === AST_NODE_TYPES.FunctionExpression)
     ) {
       return true;
     }
@@ -332,23 +361,22 @@ export default createEslintRule<Options, MessageIds>({
           return;
         }
 
-        const calleeName =
-          expression?.callee &&
-          expression.callee.type === AST_NODE_TYPES.Identifier &&
-          expression.callee.name;
-
-        if (calleeName !== "useEffect") {
+        if (!isUseEffectOrUseLayoutEffectCall(expression)) {
           return;
         }
+
+        const firstArgument = expression.arguments[0];
+        const isFunctionExpression =
+          firstArgument?.type === AST_NODE_TYPES.ArrowFunctionExpression ||
+          firstArgument?.type === AST_NODE_TYPES.FunctionExpression;
 
         const useEffectBodyInternalItems =
           expression?.arguments &&
           expression.arguments.length > 0 &&
-          expression.arguments[0].type ===
-            AST_NODE_TYPES.ArrowFunctionExpression &&
-          expression.arguments[0].body &&
-          expression.arguments[0].body.type === AST_NODE_TYPES.BlockStatement &&
-          expression.arguments[0].body.body;
+          isFunctionExpression &&
+          firstArgument.body &&
+          firstArgument.body.type === AST_NODE_TYPES.BlockStatement &&
+          firstArgument.body.body;
 
         if (
           !useEffectBodyInternalItems ||

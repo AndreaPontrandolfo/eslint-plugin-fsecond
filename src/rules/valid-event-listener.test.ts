@@ -32,6 +32,102 @@ await run({
       }, [])`,
       options: [{ requireUseEventListenerHook: false }],
     },
+    // Test React.useEffect
+    {
+      code: `React.useEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Test useLayoutEffect
+    {
+      code: `useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Test React.useLayoutEffect
+    {
+      code: `React.useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Test function expression (not arrow function)
+    {
+      code: `useEffect(function() {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return function() {
+          doThatBefore();
+          doMoreOfThatBefore();
+          if (x) {
+            doThisMore()
+          }
+          window.removeEventListener("keydown", handleUserKeyPress);
+          doThatAfter();
+          doMoreOfThatAfter();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
     {
       code: `useEffect(() => {
         refcurrent = value;
@@ -303,6 +399,82 @@ await run({
     {
       // window - required-cleanup
       code: `useEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // React.useEffect - required-cleanup
+    {
+      code: `React.useEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // useLayoutEffect - required-cleanup
+    {
+      code: `useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // React.useLayoutEffect - required-cleanup
+    {
+      code: `React.useLayoutEffect(() => {
+        doThis();
+        doMoreOfThis();
+        if (x) {
+          doThisMore()
+        }
+        window.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // Function expression - required-cleanup
+    {
+      code: `useEffect(function() {
         doThis();
         doMoreOfThis();
         if (x) {
