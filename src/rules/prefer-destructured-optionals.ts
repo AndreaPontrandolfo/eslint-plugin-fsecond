@@ -28,10 +28,6 @@ export default createEslintRule<Options, MessageIds>({
       let isParamObjectInTheMiddle = false;
 
       params.forEach((param) => {
-        if (param.type === AST_NODE_TYPES.ObjectPattern) {
-          isParamObjectInTheMiddle = true;
-        }
-
         if (
           (param.type === AST_NODE_TYPES.AssignmentPattern &&
             param.left.type !== AST_NODE_TYPES.ObjectPattern) ||
@@ -51,6 +47,14 @@ export default createEslintRule<Options, MessageIds>({
             node: param,
             messageId: "noNonDestructuredOptional",
           });
+        }
+
+        if (
+          param.type === AST_NODE_TYPES.ObjectPattern ||
+          (param.type === AST_NODE_TYPES.AssignmentPattern &&
+            param.left.type === AST_NODE_TYPES.ObjectPattern)
+        ) {
+          isParamObjectInTheMiddle = true;
         }
       });
     };

@@ -20,7 +20,7 @@ This rule promotes consistency and clarity in function signatures by:
 
 - **Grouping related optional parameters** - Optional parameters are collected in a single destructured object rather than scattered across the signature
 - **Clear visual separation** - Required parameters are distinct from optional ones, making the function contract easier to understand
-- **Better maintainability** - Adding or removing optional parameters doesn't affect required parameters. It's easier to maintain a function if the changing the order of the parameters doesn't affect the function signature.
+- **Better maintainability** - Adding or removing optional parameters doesn't affect required parameters. It's easier to maintain a function if changing the order of the parameters doesn't affect the function signature.
 - **Improved type safety** - Optional parameters in a destructured object are easier to type correctly
 
 ## Examples

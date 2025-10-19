@@ -41,7 +41,7 @@ This rule promotes consistency and correctness in event listener management in R
 Type: `boolean`\
 Default: `true`
 
-A lot of React hooks libraries provide a `useEventListener` hook that simplifies event listener management in React components. This rule can enforce the use of such a hook instead of manually adding and removing event listeners in useEffect.
+Many React hooks libraries provide a `useEventListener` hook that simplifies event listener management in React components. This rule can enforce the use of such a hook instead of manually adding and removing event listeners in useEffect.
 
 This option is set to `true` by default. Setting this to false will disable this check but the other checks around addEventListener usage correctness in React components will still be enforced.
 

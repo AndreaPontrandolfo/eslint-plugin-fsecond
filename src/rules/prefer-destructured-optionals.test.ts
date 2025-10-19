@@ -288,5 +288,21 @@ await run({
       code: "const myFn = (param1, { optionalParam = 'default' }, [first, second]) => { console.log(param1, optionalParam, first, second); }",
       errors: [{ messageId: "noNonDestructuredOptional" }],
     },
+
+    // AssignmentPattern with ObjectPattern on left side - function f(a, { x } = {}, b) -> error on b
+    {
+      code: "function f(a, { x } = {}, b) { console.log(a, x, b); }",
+      errors: [{ messageId: "noNonDestructuredOptional" }],
+    },
+    {
+      code: "const f = (a, { x } = {}, b) => { console.log(a, x, b); }",
+      errors: [{ messageId: "noNonDestructuredOptional" }],
+    },
+
+    // AssignmentPattern with ObjectPattern on left side - const g = ({ x } = {}, { y } = {}) => {} -> error on second param
+    {
+      code: "const g = ({ x } = {}, { y } = {}) => { console.log(x, y); }",
+      errors: [{ messageId: "noNonDestructuredOptional" }],
+    },
   ],
 });

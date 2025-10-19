@@ -1,9 +1,10 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
+
 # Your rule content
 
-When naming variables or parameters, avoid using 1-letter abbreaviations, if possible.
+When naming variables or parameters, avoid using 1-letter abbreviations, if possible.
 Avoid abbreviations in general, especially extreme abbreviations.
