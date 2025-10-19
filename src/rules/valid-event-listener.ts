@@ -2,13 +2,14 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
-export const RULE_NAME = "valid-event-listener";
-export type MessageIds =
+const RULE_NAME = "valid-event-listener";
+
+type MessageIds =
   | "required-cleanup"
   | "required-remove-eventListener"
   | "no-conditional-addeventlistener"
   | "require-use-event-listener-hook";
-export type Options = unknown[];
+type Options = unknown[];
 
 /**
  * Helper function: Check if a node is a method call to addEventListener or removeEventListener.

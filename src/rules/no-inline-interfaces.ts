@@ -3,9 +3,10 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
-export const RULE_NAME = "no-inline-interfaces";
-export type MessageIds = "noInlineInterfaces";
-export type Options = [
+const RULE_NAME = "no-inline-interfaces";
+
+type MessageIds = "noInlineInterfaces";
+type Options = [
   {
     checkGenericTypes?: boolean;
     checkReturnTypes?: boolean;

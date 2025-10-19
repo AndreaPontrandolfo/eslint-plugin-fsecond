@@ -1,4 +1,4 @@
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import { sheriff, type SheriffSettings } from "eslint-config-sheriff";
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 
@@ -23,4 +23,5 @@ export default defineConfig(
       "@typescript-eslint/naming-convention": 0,
     },
   },
+  globalIgnores([".eslint-doc-generatorrc.js"]),
 );

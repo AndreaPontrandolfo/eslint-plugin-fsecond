@@ -1,8 +1,5 @@
 import { ESLintUtils } from "@typescript-eslint/utils";
-
-export interface FsecondDocs {
-  recommended: boolean;
-}
+import type { FsecondDocs } from "./types";
 
 export const createEslintRule = ESLintUtils.RuleCreator<FsecondDocs>(
   (ruleName) => ruleName,

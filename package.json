@@ -24,8 +24,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc",
     "lint": "eslint --max-warnings=0",
-    "knip": "knip",
-    "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip && docs:lint",
+    "knip": "knip --cache",
+    "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip && pnpm docs:lint",
     "semantic-release": "pnpm build && semantic-release"
   },
   "author": {
@@ -66,9 +66,7 @@
   },
   "dependencies": {
     "@typescript-eslint/parser": "^8.46.0",
-    "@typescript-eslint/utils": "^8.46.0",
-    "minimatch": "^10.0.3",
-    "read-package-up": "^11.0.0"
+    "@typescript-eslint/utils": "^8.46.0"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.2",

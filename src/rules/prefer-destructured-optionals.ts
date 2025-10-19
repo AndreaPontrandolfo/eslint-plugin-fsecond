@@ -1,9 +1,10 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
-export const RULE_NAME = "prefer-destructured-optionals";
-export type MessageIds = "noNonDestructuredOptional";
-export type Options = [];
+const RULE_NAME = "prefer-destructured-optionals";
+
+type MessageIds = "noNonDestructuredOptional";
+type Options = [];
 
 export default createEslintRule<Options, MessageIds>({
   name: RULE_NAME,
