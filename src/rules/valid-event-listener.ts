@@ -238,6 +238,16 @@ const findRemoveEventListenerInCleanup = (
     ) {
       return true;
     }
+
+    // Handle arrow expression body: () => element.removeEventListener(...)
+    if (
+      cleanupFunction &&
+      cleanupFunction.type === AST_NODE_TYPES.ArrowFunctionExpression &&
+      cleanupFunction.body &&
+      isRemoveEventListenerCall(cleanupFunction.body)
+    ) {
+      return true;
+    }
   }
 
   return false;

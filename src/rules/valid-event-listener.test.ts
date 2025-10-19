@@ -223,6 +223,46 @@ await run({
       }, [])`,
       options: [{ requireUseEventListenerHook: false }],
     },
+    // Arrow function with expression body - direct removeEventListener call
+    {
+      code: `useEffect(() => {
+        window.addEventListener("click", handleClick);
+        return () => window.removeEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - document removeEventListener
+    {
+      code: `useEffect(() => {
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - element removeEventListener
+    {
+      code: `useEffect(() => {
+        element.addEventListener("scroll", handleScroll);
+        return () => element.removeEventListener("scroll", handleScroll);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - optional chaining
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+        return () => element?.removeEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Arrow function with expression body - has removeEventListener (even if on different object - rule can't verify semantic match)
+    {
+      code: `useEffect(() => {
+        window.addEventListener("click", handleClick);
+        return () => element.removeEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
   ],
   invalid: [
     {
@@ -756,6 +796,19 @@ await run({
       errors: [
         {
           messageId: "no-conditional-addeventlistener",
+        },
+      ],
+    },
+    // Arrow function with expression body - missing removeEventListener
+    {
+      code: `useEffect(() => {
+        window.addEventListener("click", handleClick);
+        return () => doSomethingElse();
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
         },
       ],
     },
