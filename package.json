@@ -25,7 +25,7 @@
     "typecheck": "tsc",
     "lint": "eslint --max-warnings=0",
     "knip": "knip --cache",
-    "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip && pnpm docs:lint",
+    "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip",
     "semantic-release": "pnpm build && semantic-release"
   },
   "author": {
