@@ -15,7 +15,6 @@ await run({
     "const myFn = function(param) { console.log(param); }",
     "const myFn = (param1, param2) => { console.log(param1, param2); }",
     "function myFunction(param1, param2) { console.log(param1, param2); }",
-    "const myFn = (param1, param2) => { console.log(param1, param2); }",
 
     // Function with destructured object parameters (valid)
     "function myFunction(param1, param2, {optionalParam}) { console.log(param1, param2, optionalParam); }",

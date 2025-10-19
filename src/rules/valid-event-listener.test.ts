@@ -203,6 +203,26 @@ await run({
       }, [])`,
       options: [{ requireUseEventListenerHook: false }],
     },
+    // Optional chaining - element?.addEventListener with cleanup
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+        return () => {
+          element?.removeEventListener("click", handleClick);
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
+    // Optional chaining - nested property access with optional chaining
+    {
+      code: `useEffect(() => {
+        obj?.element?.addEventListener("keydown", handleKeyDown);
+        return () => {
+          obj?.element?.removeEventListener("keydown", handleKeyDown);
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+    },
   ],
   invalid: [
     {
@@ -679,6 +699,63 @@ await run({
       errors: [
         {
           messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    {
+      code: `useEffect(() => {
+        window.document.addEventListener("keydown", handleUserKeyPress);
+        doOtherStuff();
+        doSomeOtherStuff();
+        return () => {
+          doThat();
+          window.document.addEventListener("keydown", handleUserKeyPress);
+          doMoreOfThat();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    // Optional chaining - missing cleanup
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-cleanup",
+        },
+      ],
+    },
+    // Optional chaining - missing removeEventListener
+    {
+      code: `useEffect(() => {
+        element?.addEventListener("click", handleClick);
+        return () => {
+          doOtherStuff();
+        };
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "required-remove-eventListener",
+        },
+      ],
+    },
+    // Optional chaining - conditional addEventListener
+    {
+      code: `useEffect(() => {
+        element && element?.addEventListener("click", handleClick);
+      }, [])`,
+      options: [{ requireUseEventListenerHook: false }],
+      errors: [
+        {
+          messageId: "no-conditional-addeventlistener",
         },
       ],
     },

@@ -18,20 +18,46 @@ const isEventListenerMethodCall = (
   node: unknown,
   methodName: "addEventListener" | "removeEventListener",
 ): node is TSESTree.CallExpression => {
+  // Handle ChainExpression wrapping the entire CallExpression
+  let currentNode = node;
+
+  if (
+    currentNode instanceof Object &&
+    "type" in currentNode &&
+    currentNode.type === AST_NODE_TYPES.ChainExpression
+  ) {
+    currentNode = (currentNode as TSESTree.ChainExpression).expression;
+  }
+
+  // Validate it's a CallExpression
+  if (
+    !(currentNode instanceof Object) ||
+    !("type" in currentNode) ||
+    currentNode.type !== AST_NODE_TYPES.CallExpression ||
+    !("callee" in currentNode)
+  ) {
+    return false;
+  }
+
+  const callExpression = currentNode as TSESTree.CallExpression;
+
+  // Handle ChainExpression wrapping the callee MemberExpression
+  let { callee } = callExpression;
+
+  if (
+    callee instanceof Object &&
+    callee.type === AST_NODE_TYPES.ChainExpression
+  ) {
+    callee = callee.expression;
+  }
+
+  // Check if callee is a MemberExpression with the correct method name
   return (
-    node instanceof Object &&
-    "type" in node &&
-    node.type === AST_NODE_TYPES.CallExpression &&
-    "callee" in node &&
-    node.callee instanceof Object &&
-    "type" in node.callee &&
-    node.callee.type === AST_NODE_TYPES.MemberExpression &&
-    "property" in node.callee &&
-    node.callee.property instanceof Object &&
-    "type" in node.callee.property &&
-    node.callee.property.type === AST_NODE_TYPES.Identifier &&
-    "name" in node.callee.property &&
-    node.callee.property.name === methodName
+    callee instanceof Object &&
+    callee.type === AST_NODE_TYPES.MemberExpression &&
+    callee.property instanceof Object &&
+    callee.property.type === AST_NODE_TYPES.Identifier &&
+    callee.property.name === methodName
   );
 };
 
@@ -254,6 +280,35 @@ const hasConditionalAddEventListener = (
 };
 
 /**
+ * Helper function: Unwrap ChainExpression to get the actual CallExpression.
+ */
+const unwrapToCallExpression = (
+  node: unknown,
+): TSESTree.CallExpression | null => {
+  let currentNode = node;
+
+  // Handle ChainExpression wrapping the entire CallExpression
+  if (
+    currentNode instanceof Object &&
+    "type" in currentNode &&
+    currentNode.type === AST_NODE_TYPES.ChainExpression
+  ) {
+    currentNode = (currentNode as TSESTree.ChainExpression).expression;
+  }
+
+  // Validate it's a CallExpression
+  if (
+    !(currentNode instanceof Object) ||
+    !("type" in currentNode) ||
+    currentNode.type !== AST_NODE_TYPES.CallExpression
+  ) {
+    return null;
+  }
+
+  return currentNode as TSESTree.CallExpression;
+};
+
+/**
  * Helper function: Check if addEventListener call has \{ once: true \} option.
  */
 const hasOnceOption = (call: unknown): boolean => {
@@ -261,7 +316,13 @@ const hasOnceOption = (call: unknown): boolean => {
     return false;
   }
 
-  const optionsArgument = call.arguments[2];
+  const callExpression = unwrapToCallExpression(call);
+
+  if (!callExpression) {
+    return false;
+  }
+
+  const optionsArgument = callExpression.arguments[2];
 
   if (
     optionsArgument &&
