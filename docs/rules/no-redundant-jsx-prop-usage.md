@@ -2,7 +2,9 @@
 
 💼 This rule is enabled in the 🔬 `recommendedTypeChecked` config.
 
-🔧 This rule requires [type information](https://typescript-eslint.io/getting-started/typed-linting).
+🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/use/command-line-interface#--fix).
+
+💭 This rule requires [type information](https://typescript-eslint.io/getting-started/typed-linting).
 
 <!-- end auto-generated rule header -->
 

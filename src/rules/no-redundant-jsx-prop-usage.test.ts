@@ -185,6 +185,12 @@ await run({
         }
         const x = <Button variant="primary" />;
       `,
+      output: `
+        function Button({ variant = "primary" }: { variant?: string }) {
+          return <button />;
+        }
+        const x = <Button />;
+      `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
 
@@ -196,6 +202,12 @@ await run({
           return <span />;
         }
         const x = <Counter count={0} />;
+      `,
+      output: `
+        function Counter({ count = 0 }: { count?: number }) {
+          return <span />;
+        }
+        const x = <Counter />;
       `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
@@ -209,6 +221,12 @@ await run({
         }
         const x = <Toggle enabled={true} />;
       `,
+      output: `
+        function Toggle({ enabled = true }: { enabled?: boolean }) {
+          return <div />;
+        }
+        const x = <Toggle />;
+      `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
 
@@ -220,6 +238,12 @@ await run({
           return <div />;
         }
         const x = <Toggle enabled />;
+      `,
+      output: `
+        function Toggle({ enabled = true }: { enabled?: boolean }) {
+          return <div />;
+        }
+        const x = <Toggle />;
       `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
@@ -233,6 +257,12 @@ await run({
         }
         const x = <Toggle enabled={false} />;
       `,
+      output: `
+        function Toggle({ enabled = false }: { enabled?: boolean }) {
+          return <div />;
+        }
+        const x = <Toggle />;
+      `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
 
@@ -244,6 +274,12 @@ await run({
           return <div />;
         }
         const x = <Modal title={null} />;
+      `,
+      output: `
+        function Modal({ title = null }: { title?: string | null }) {
+          return <div />;
+        }
+        const x = <Modal />;
       `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
@@ -257,6 +293,12 @@ await run({
         }
         const x = <Slider min={-10} />;
       `,
+      output: `
+        function Slider({ min = -10 }: { min?: number }) {
+          return <input />;
+        }
+        const x = <Slider />;
+      `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
 
@@ -267,6 +309,10 @@ await run({
         const Button = ({ variant = "primary" }: { variant?: string }) => <button />;
         const x = <Button variant="primary" />;
       `,
+      output: `
+        const Button = ({ variant = "primary" }: { variant?: string }) => <button />;
+        const x = <Button />;
+      `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
 
@@ -276,6 +322,10 @@ await run({
       code: `
         const Counter = ({ count = 0 }: { count?: number }): JSX.Element => <span />;
         const x = <Counter count={0} />;
+      `,
+      output: `
+        const Counter = ({ count = 0 }: { count?: number }): JSX.Element => <span />;
+        const x = <Counter />;
       `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
@@ -291,10 +341,18 @@ await run({
         );
         const x = <Input placeholder="Search..." />;
       `,
+      output: `
+        import React from "react";
+        const Input = React.forwardRef(
+          ({ placeholder = "Search..." }: { placeholder?: string }, ref: React.Ref<HTMLInputElement>) =>
+            <input ref={ref} placeholder={placeholder} />,
+        );
+        const x = <Input />;
+      `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
 
-    // Multiple redundant props on the same element — two errors
+    // Multiple redundant props on the same element — two errors, both fixed in one pass
     {
       filename: "test.tsx",
       code: `
@@ -302,6 +360,12 @@ await run({
           return <div />;
         }
         const x = <Card title="Untitled" count={0} />;
+      `,
+      output: `
+        function Card({ title = "Untitled", count = 0 }: { title?: string; count?: number }) {
+          return <div />;
+        }
+        const x = <Card />;
       `,
       errors: [
         { messageId: "noRedundantJsxPropUsage" },
@@ -317,6 +381,12 @@ await run({
           return <div />;
         }
         const x = <Card title="Untitled" count={99} />;
+      `,
+      output: `
+        function Card({ title = "Untitled", count = 0 }: { title?: string; count?: number }) {
+          return <div />;
+        }
+        const x = <Card count={99} />;
       `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },

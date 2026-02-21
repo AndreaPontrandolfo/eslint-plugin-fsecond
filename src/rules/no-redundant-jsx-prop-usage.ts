@@ -245,6 +245,7 @@ export default createEslintRule<Options, MessageIds>({
       recommended: false,
       requiresTypeChecking: true,
     },
+    fixable: "code",
     schema: [],
     messages: {
       noRedundantJsxPropUsage:
@@ -277,8 +278,8 @@ export default createEslintRule<Options, MessageIds>({
         return null;
       }
 
-      for (const decl of declarations) {
-        const defaults = extractDefaultsFromDeclaration(decl);
+      for (const declaration of declarations) {
+        const defaults = extractDefaultsFromDeclaration(declaration);
 
         if (defaults !== null) {
           defaultsCache.set(symbol, defaults);
@@ -357,6 +358,14 @@ export default createEslintRule<Options, MessageIds>({
               data: {
                 propName,
                 defaultValue: String(defaultValue),
+              },
+              fix(fixer) {
+                const tokenBefore = context.sourceCode.getTokenBefore(attr);
+
+                // Remove the attribute along with the preceding whitespace/token gap
+                const start = tokenBefore ? tokenBefore.range[1] : attr.range[0];
+
+                return fixer.removeRange([start, attr.range[1]]);
               },
             });
           }
