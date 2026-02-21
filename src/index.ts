@@ -1,4 +1,5 @@
 import noInlineInterfaces from "./rules/no-inline-interfaces";
+import noRedundantJsxPropUsage from "./rules/no-redundant-jsx-prop-usage";
 // import preferAliasedPath from "./rules/prefer-aliased-path";
 import preferDestructuredOptionals from "./rules/prefer-destructured-optionals";
 import validEventListener from "./rules/valid-event-listener";
@@ -14,6 +15,7 @@ const plugin = {
     "valid-event-listener": validEventListener,
     // "prefer-aliased-path": preferAliasedPath,
     "no-inline-interfaces": noInlineInterfaces,
+    "no-redundant-jsx-prop-usage": noRedundantJsxPropUsage,
   },
 };
 
@@ -31,6 +33,22 @@ Object.assign(plugin.configs, {
           2,
           { checkGenericTypes: false, checkReturnTypes: true },
         ],
+      },
+    },
+  ],
+  recommendedTypeChecked: [
+    {
+      plugins: {
+        fsecond: plugin,
+      },
+      rules: {
+        "fsecond/prefer-destructured-optionals": 2,
+        "fsecond/valid-event-listener": 2,
+        "fsecond/no-inline-interfaces": [
+          2,
+          { checkGenericTypes: false, checkReturnTypes: true },
+        ],
+        "fsecond/no-redundant-jsx-prop-usage": 2,
       },
     },
   ],
