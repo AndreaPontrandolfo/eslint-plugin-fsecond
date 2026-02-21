@@ -173,6 +173,17 @@ await run({
         const x = <Modal title="hello" />;
       `,
     },
+
+    // undefined default — different string passed
+    {
+      filename: "test.tsx",
+      code: `
+        function Field({ label = undefined }: { label?: string }) {
+          return <span />;
+        }
+        const x = <Field label="hello" />;
+      `,
+    },
   ],
 
   invalid: [
@@ -387,6 +398,42 @@ await run({
           return <div />;
         }
         const x = <Card count={99} />;
+      `,
+      errors: [{ messageId: "noRedundantJsxPropUsage" }],
+    },
+
+    // undefined default matches {undefined}
+    {
+      filename: "test.tsx",
+      code: `
+        function Field({ label = undefined }: { label?: string }) {
+          return <span />;
+        }
+        const x = <Field label={undefined} />;
+      `,
+      output: `
+        function Field({ label = undefined }: { label?: string }) {
+          return <span />;
+        }
+        const x = <Field />;
+      `,
+      errors: [{ messageId: "noRedundantJsxPropUsage" }],
+    },
+
+    // Renamed binding: { label: text = "hello" } — prop name is "label", not "text"
+    {
+      filename: "test.tsx",
+      code: `
+        function Tag({ label: text = "hello" }: { label?: string }) {
+          return <span>{text}</span>;
+        }
+        const x = <Tag label="hello" />;
+      `,
+      output: `
+        function Tag({ label: text = "hello" }: { label?: string }) {
+          return <span>{text}</span>;
+        }
+        const x = <Tag />;
       `,
       errors: [{ messageId: "noRedundantJsxPropUsage" }],
     },
