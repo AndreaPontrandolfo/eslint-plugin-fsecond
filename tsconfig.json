@@ -28,6 +28,7 @@
     "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
     "noUncheckedSideEffectImports": true,
     "erasableSyntaxOnly": true,
+    "jsx": "react-jsx",
     "incremental": true
   }
 }
