@@ -5,5 +5,5 @@ export default defineConfig({
   sourcemap: true,
   dts: true,
   publint: { strict: true },
-  attw: { level: "error", profile: "esmOnly" },
+  attw: { level: "error", profile: "esm-only" },
 });
