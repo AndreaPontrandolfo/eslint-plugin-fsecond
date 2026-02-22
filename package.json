@@ -28,8 +28,8 @@
     "typecheck": "tsc",
     "lint": "eslint --max-warnings=0",
     "knip": "knip --cache",
-    "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip && lint:eslint-docs",
-    "docs:update": "pnpm build && eslint-doc-generator",
+    "qa": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm knip && pnpm lint:eslint-docs",
+    "docs:update": "pnpm build && eslint-doc-generator --config-emoji recommendedTypeChecked,☑️",
     "lint:eslint-docs": "eslint-doc-generator --check",
     "semantic-release": "pnpm build && semantic-release"
   },

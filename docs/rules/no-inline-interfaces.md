@@ -1,6 +1,8 @@
-# Disallow inline object type literals in variable and function annotations; extract to a named interface or type alias (`fsecond/no-inline-interfaces`)
+# fsecond/no-inline-interfaces
 
-💼 This rule is enabled in the ✅ `recommended` config.
+📝 Disallow inline object type literals in variable and function annotations; extract to a named interface or type alias.
+
+💼 This rule is enabled in the following configs: ✅ `recommended`, ☑️ `recommendedTypeChecked`.
 
 <!-- end auto-generated rule header -->
 
@@ -38,10 +40,10 @@ Extracting object types into named interfaces or type aliases:
 
 <!-- begin auto-generated rule options list -->
 
-| Name                | Description                                                                          | Type    |
-| :------------------ | :----------------------------------------------------------------------------------- | :------ |
-| `checkGenericTypes` | Check inline object types within generic type arguments (e.g., Array<{ a: string }>) | Boolean |
-| `checkReturnTypes`  | Check inline object types in function return type annotations                        | Boolean |
+| Name                | Description                                                                          | Type    | Default |
+| :------------------ | :----------------------------------------------------------------------------------- | :------ | :------ |
+| `checkGenericTypes` | Check inline object types within generic type arguments (e.g., Array<{ a: string }>) | Boolean | `false` |
+| `checkReturnTypes`  | Check inline object types in function return type annotations                        | Boolean | `false` |
 
 <!-- end auto-generated rule options list -->
 

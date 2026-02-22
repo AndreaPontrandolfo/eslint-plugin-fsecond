@@ -1,6 +1,8 @@
-# Enforce placing optional parameters on a destructured object instead of the function signature itself (`fsecond/prefer-destructured-optionals`)
+# fsecond/prefer-destructured-optionals
 
-💼 This rule is enabled in the ✅ `recommended` config.
+📝 Enforce placing optional parameters on a destructured object instead of the function signature itself.
+
+💼 This rule is enabled in the following configs: ✅ `recommended`, ☑️ `recommendedTypeChecked`.
 
 <!-- end auto-generated rule header -->
 
