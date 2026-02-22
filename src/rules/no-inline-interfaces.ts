@@ -1,28 +1,29 @@
 /* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 /* eslint-disable fsecond/prefer-destructured-optionals */
-import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/utils";
+import {
+  AST_NODE_TYPES,
+  ASTUtils,
+  type TSESTree,
+} from "@typescript-eslint/utils";
 import { createEslintRule } from "../utils";
 
 const RULE_NAME = "no-inline-interfaces";
 
-const STATEMENT_PARENT_TYPES = new Set([
+const isStatementParent = ASTUtils.isNodeOfTypes([
   AST_NODE_TYPES.Program,
   AST_NODE_TYPES.BlockStatement,
   AST_NODE_TYPES.TSModuleBlock,
-]);
+] as const);
 
 const findStatementAncestor = (node: TSESTree.Node): TSESTree.Node | null => {
-  let current: TSESTree.Node | undefined = node;
-
-  while (current.parent) {
-    if (STATEMENT_PARENT_TYPES.has(current.parent.type as AST_NODE_TYPES)) {
-      return current;
-    }
-
-    current = current.parent;
+  if (!node.parent) {
+    return null;
+  }
+  if (isStatementParent(node.parent)) {
+    return node;
   }
 
-  return null;
+  return findStatementAncestor(node.parent);
 };
 
 type MessageIds = "noInlineInterfaces";
@@ -68,8 +69,8 @@ const findTypeLiterals = (
 
     case AST_NODE_TYPES.TSUnionType:
     case AST_NODE_TYPES.TSIntersectionType: {
-      for (const t of type.types) {
-        findTypeLiterals(t, results, checkGenericTypes);
+      for (const typeNode of type.types) {
+        findTypeLiterals(typeNode, results, checkGenericTypes);
       }
       break;
     }
@@ -192,23 +193,23 @@ const findTypeLiterals = (
   return results;
 };
 
+const isClassNode = ASTUtils.isNodeOfTypes([
+  AST_NODE_TYPES.ClassDeclaration,
+  AST_NODE_TYPES.ClassExpression,
+] as const);
+
 /**
  * Check if a node is inside a class.
  */
 const isInsideClass = (node: TSESTree.Node): boolean => {
-  let current = node.parent;
-
-  while (current) {
-    if (
-      current.type === AST_NODE_TYPES.ClassDeclaration ||
-      current.type === AST_NODE_TYPES.ClassExpression
-    ) {
-      return true;
-    }
-    current = current.parent;
+  if (!node.parent) {
+    return false;
+  }
+  if (isClassNode(node.parent)) {
+    return true;
   }
 
-  return false;
+  return isInsideClass(node.parent);
 };
 
 export default createEslintRule<Options, MessageIds>({
@@ -325,12 +326,8 @@ export default createEslintRule<Options, MessageIds>({
         nodeToCheck = param.left;
       }
 
-      const p = nodeToCheck as TSESTree.Node & {
-        typeAnnotation?: TSESTree.TSTypeAnnotation;
-      };
-
-      if (p.typeAnnotation) {
-        reportTypeAnnotation(p.typeAnnotation.typeAnnotation);
+      if ("typeAnnotation" in nodeToCheck && nodeToCheck.typeAnnotation) {
+        reportTypeAnnotation(nodeToCheck.typeAnnotation.typeAnnotation);
       }
     };
 
@@ -342,12 +339,8 @@ export default createEslintRule<Options, MessageIds>({
         }
 
         // Check variable type annotation
-        const id = node.id as TSESTree.Node & {
-          typeAnnotation?: TSESTree.TSTypeAnnotation;
-        };
-
-        if (id.typeAnnotation) {
-          reportTypeAnnotation(id.typeAnnotation.typeAnnotation);
+        if ("typeAnnotation" in node.id && node.id.typeAnnotation) {
+          reportTypeAnnotation(node.id.typeAnnotation.typeAnnotation);
         }
       },
 
