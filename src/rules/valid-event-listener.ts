@@ -241,8 +241,7 @@ const findRemoveEventListenerInCleanup = (
 
     // Handle arrow expression body: () => element.removeEventListener(...)
     if (
-      cleanupFunction &&
-      cleanupFunction.type === AST_NODE_TYPES.ArrowFunctionExpression &&
+      cleanupFunction?.type === AST_NODE_TYPES.ArrowFunctionExpression &&
       cleanupFunction.body &&
       isRemoveEventListenerCall(cleanupFunction.body)
     ) {
@@ -338,10 +337,7 @@ const hasOnceOption = (call: unknown): boolean => {
 
   const optionsArgument = callExpression.arguments[2];
 
-  if (
-    optionsArgument &&
-    optionsArgument.type === AST_NODE_TYPES.ObjectExpression
-  ) {
+  if (optionsArgument?.type === AST_NODE_TYPES.ObjectExpression) {
     for (const property of optionsArgument.properties) {
       if (
         property.type === AST_NODE_TYPES.Property &&
@@ -449,8 +445,7 @@ export default createEslintRule<Options, MessageIds>({
           expression?.arguments &&
           expression.arguments.length > 0 &&
           isFunctionExpression &&
-          firstArgument.body &&
-          firstArgument.body.type === AST_NODE_TYPES.BlockStatement &&
+          firstArgument.body?.type === AST_NODE_TYPES.BlockStatement &&
           firstArgument.body.body;
 
         if (

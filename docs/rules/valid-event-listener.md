@@ -1,6 +1,8 @@
-# Enforces best practices around addEventListener method in React components (`fsecond/valid-event-listener`)
+# fsecond/valid-event-listener
 
-💼 This rule is enabled in the ✅ `recommended` config.
+📝 Enforces best practices around addEventListener method in React components.
+
+💼 This rule is enabled in the following configs: ✅ `recommended`, ☑️ `recommendedTypeChecked`.
 
 <!-- end auto-generated rule header -->
 
@@ -30,9 +32,9 @@ This rule promotes consistency and correctness in event listener management in R
 
 <!-- begin auto-generated rule options list -->
 
-| Name                          | Description                                | Type    |
-| :---------------------------- | :----------------------------------------- | :------ |
-| `requireUseEventListenerHook` | Require the use of a useEventListener hook | Boolean |
+| Name                          | Description                                | Type    | Default |
+| :---------------------------- | :----------------------------------------- | :------ | :------ |
+| `requireUseEventListenerHook` | Require the use of a useEventListener hook | Boolean | `true`  |
 
 <!-- end auto-generated rule options list -->
 

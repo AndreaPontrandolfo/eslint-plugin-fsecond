@@ -363,7 +363,9 @@ export default createEslintRule<Options, MessageIds>({
                 const tokenBefore = context.sourceCode.getTokenBefore(attr);
 
                 // Remove the attribute along with the preceding whitespace/token gap
-                const start = tokenBefore ? tokenBefore.range[1] : attr.range[0];
+                const start = tokenBefore
+                  ? tokenBefore.range[1]
+                  : attr.range[0];
 
                 return fixer.removeRange([start, attr.range[1]]);
               },

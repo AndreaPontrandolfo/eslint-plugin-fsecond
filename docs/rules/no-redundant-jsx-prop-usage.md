@@ -1,10 +1,12 @@
-# Disallow passing JSX props whose value matches the component's destructuring default (`fsecond/no-redundant-jsx-prop-usage`)
+# fsecond/no-redundant-jsx-prop-usage
 
-💼 This rule is enabled in the 🔬 `recommendedTypeChecked` config.
+📝 Disallow passing a JSX prop whose value matches the component's destructuring default for that prop.
 
-🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/use/command-line-interface#--fix).
+💼 This rule is enabled in the ☑️ `recommendedTypeChecked` config.
 
-💭 This rule requires [type information](https://typescript-eslint.io/getting-started/typed-linting).
+🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+
+💭 This rule requires [type information](https://typescript-eslint.io/linting/typed-linting).
 
 <!-- end auto-generated rule header -->
 
@@ -108,48 +110,6 @@ const x = <Toggle enabled />;
 // Intrinsic HTML elements are always ignored
 const x = <div className="foo" />;
 const y = <input type="text" />;
-```
-
-## Configuration
-
-This rule requires typed linting. Add `parserOptions.project` or `parserOptions.projectService` to your ESLint config:
-
-```javascript
-// eslint.config.js
-import tseslint from "typescript-eslint";
-import fsecond from "eslint-plugin-fsecond";
-
-export default tseslint.config({
-  extends: [
-    ...tseslint.configs.recommended,
-    ...fsecond.configs.recommendedTypeChecked,
-  ],
-  languageOptions: {
-    parserOptions: {
-      projectService: true,
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
-
-Or enable the rule individually:
-
-```javascript
-// eslint.config.js
-export default [
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    rules: {
-      "fsecond/no-redundant-jsx-prop-usage": "error",
-    },
-  },
-];
 ```
 
 ## Limitations

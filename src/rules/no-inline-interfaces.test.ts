@@ -212,48 +212,65 @@ const config: App.Config = { debug: true };`,
     // Variable with inline object type
     {
       code: `const myVariable: { prop1: string; prop2: number } = {};`,
+      output: `interface InlineInterface { prop1: string; prop2: number }
+const myVariable: InlineInterface = {};`,
       errors: ["noInlineInterfaces"],
     },
 
     // Arrow function with inline object type on destructured params
     {
       code: `export const MyReactComponent = ({prop1, prop2}: {prop1: string, prop2: number}) => {}`,
+      output: `interface InlineInterface {prop1: string, prop2: number}
+export const MyReactComponent = ({prop1, prop2}: InlineInterface) => {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Arrow function with inline object type on props param
     {
       code: `export const MyReactComponent = (props: {prop1: string, prop2: number}) => {}`,
+      output: `interface InlineInterface {prop1: string, prop2: number}
+export const MyReactComponent = (props: InlineInterface) => {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Function declaration with inline object type on destructured params
     {
       code: `function MyReactComponent({prop1, prop2}: {prop1: string, prop2: number}) {}`,
+      output: `interface InlineInterface {prop1: string, prop2: number}
+function MyReactComponent({prop1, prop2}: InlineInterface) {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Function declaration with inline object type on props param
     {
       code: `function MyReactComponent(props: {prop1: string, prop2: number}) {}`,
+      output: `interface InlineInterface {prop1: string, prop2: number}
+function MyReactComponent(props: InlineInterface) {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Function expression with inline object type
     {
       code: `const fn = function(props: {a: string}) {}`,
+      output: `interface InlineInterface {a: string}
+const fn = function(props: InlineInterface) {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Union with inline object type (should flag only the object literal)
     {
       code: `const x: { a: string } | null = null;`,
+      output: `interface InlineInterface { a: string }
+const x: InlineInterface | null = null;`,
       errors: ["noInlineInterfaces"],
     },
 
     // Intersection with inline object type (should flag only the object literal)
     {
       code: `const x: { a: string } & { b: number } = {};`,
+      output: `interface InlineInterface { a: string }
+interface InlineInterface { b: number }
+const x: InlineInterface & InlineInterface = {};`,
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
 
@@ -261,6 +278,9 @@ const config: App.Config = { debug: true };`,
     {
       code: `interface B { b: number }
 const x: B | { a: string } = {};`,
+      output: `interface B { b: number }
+interface InlineInterface { a: string }
+const x: B | InlineInterface = {};`,
       errors: ["noInlineInterfaces"],
     },
 
@@ -268,172 +288,236 @@ const x: B | { a: string } = {};`,
     {
       code: `interface B { b: number }
 const x: B & { a: string } = {};`,
+      output: `interface B { b: number }
+interface InlineInterface { a: string }
+const x: B & InlineInterface = {};`,
       errors: ["noInlineInterfaces"],
     },
 
     // Multiple function params with inline types
     {
       code: `function fn(a: { x: string }, b: { y: number }) {}`,
+      output: `interface InlineInterface { x: string }
+interface InlineInterface { y: number }
+function fn(a: InlineInterface, b: InlineInterface) {}`,
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
 
     // Array syntax (not generic)
     {
       code: `const x: { a: string }[] = [];`,
+      output: `interface InlineInterface { a: string }
+const x: InlineInterface[] = [];`,
       errors: ["noInlineInterfaces"],
     },
 
     // Tuple type
     {
       code: `const x: [{ a: string }, number] = [{a: ''}, 0];`,
+      output: `interface InlineInterface { a: string }
+const x: [InlineInterface, number] = [{a: ''}, 0];`,
       errors: ["noInlineInterfaces"],
     },
 
     // Optional parameter with inline object type
     {
       code: `function setup(config?: { debug: boolean }) {}`,
+      output: `interface InlineInterface { debug: boolean }
+function setup(config?: InlineInterface) {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Rest parameter with inline object type array
     {
       code: `function process(...items: { id: string }[]) {}`,
+      output: `interface InlineInterface { id: string }
+function process(...items: InlineInterface[]) {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Nested destructuring with inline type
     {
       code: `function fn({ user }: { user: { name: string } }) {}`,
+      output: `interface InlineInterface2 { name: string }
+interface InlineInterface { user: InlineInterface2 }
+function fn({ user }: InlineInterface) {}`,
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
 
     // Complex union with multiple inline objects
     {
       code: `const x: { type: 'a'; value: string } | { type: 'b'; value: number } = { type: 'a', value: '' };`,
+      output: `interface InlineInterface { type: 'a'; value: string }
+interface InlineInterface { type: 'b'; value: number }
+const x: InlineInterface | InlineInterface = { type: 'a', value: '' };`,
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
 
     // Inline object with method signature
     {
       code: `const handler: { onClick(): void; onHover(): void } = { onClick() {}, onHover() {} };`,
+      output: `interface InlineInterface { onClick(): void; onHover(): void }
+const handler: InlineInterface = { onClick() {}, onHover() {} };`,
       errors: ["noInlineInterfaces"],
     },
 
     // Inline object with index signature
     {
       code: `const map: { [key: string]: number } = {};`,
+      output: `interface InlineInterface { [key: string]: number }
+const map: InlineInterface = {};`,
       errors: ["noInlineInterfaces"],
     },
 
     // Type assertion doesn't exempt from rule
     {
       code: `const data: { id: string } = { id: '123' } as { id: string };`,
+      output: `interface InlineInterface { id: string }
+const data: InlineInterface = { id: '123' } as { id: string };`,
       errors: ["noInlineInterfaces"],
     },
 
     // Destructuring with default values
     {
       code: `function fn({ x = 0 }: { x?: number } = {}) {}`,
+      output: `interface InlineInterface { x?: number }
+function fn({ x = 0 }: InlineInterface = {}) {}`,
       errors: ["noInlineInterfaces"],
     },
 
     // Multiple destructured parameters
     {
       code: `function fn({ a }: { a: string }, { b }: { b: number }) {}`,
+      output: `interface InlineInterface { a: string }
+interface InlineInterface { b: number }
+function fn({ a }: InlineInterface, { b }: InlineInterface) {}`,
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
 
     // Optional property in inline type
     {
       code: `const x: { a?: string } = {};`,
+      output: `interface InlineInterface { a?: string }
+const x: InlineInterface = {};`,
       errors: ["noInlineInterfaces"],
     },
 
     // Readonly property in inline type
     {
       code: `const x: { readonly a: string } = { a: '' };`,
+      output: `interface InlineInterface { readonly a: string }
+const x: InlineInterface = { a: '' };`,
       errors: ["noInlineInterfaces"],
     },
 
     // Computed property in inline type
     {
       code: `const key = 'id'; const x: { [key]: string } = { id: '' };`,
+      output: `const key = 'id'; interface InlineInterface { [key]: string }
+const x: InlineInterface = { id: '' };`,
       errors: ["noInlineInterfaces"],
     },
 
     // Call signature in inline type
     {
       code: `const fn: { (): void } = () => {};`,
+      output: `interface InlineInterface { (): void }
+const fn: InlineInterface = () => {};`,
       errors: ["noInlineInterfaces"],
     },
 
     // Construct signature in inline type
     {
       code: `const Ctor: { new (): object } = class {};`,
+      output: `interface InlineInterface { new (): object }
+const Ctor: InlineInterface = class {};`,
       errors: ["noInlineInterfaces"],
     },
 
     // Mixed union with primitives and inline objects
     {
       code: `const x: string | { error: true } = { error: true };`,
+      output: `interface InlineInterface { error: true }
+const x: string | InlineInterface = { error: true };`,
       errors: ["noInlineInterfaces"],
     },
 
     // Nested unions with inline objects
     {
       code: `const x: ({ a: string } | { b: number }) | null = null;`,
+      output: `interface InlineInterface { a: string }
+interface InlineInterface { b: number }
+const x: (InlineInterface | InlineInterface) | null = null;`,
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
 
     // Let and var declarations
     {
       code: `let mutable: { count: number } = { count: 0 };`,
+      output: `interface InlineInterface { count: number }
+let mutable: InlineInterface = { count: 0 };`,
       errors: ["noInlineInterfaces"],
     },
     {
       code: `var legacy: { value: string } = { value: '' };`,
+      output: `interface InlineInterface { value: string }
+var legacy: InlineInterface = { value: '' };`,
       errors: ["noInlineInterfaces"],
     },
 
     // Async function with inline param type
     {
       code: `async function fetchData(config: { url: string }) { return ''; }`,
+      output: `interface InlineInterface { url: string }
+async function fetchData(config: InlineInterface) { return ''; }`,
       errors: ["noInlineInterfaces"],
     },
 
     // Generator function with inline type
     {
       code: `function* gen(opts: { max: number }) { yield 1; }`,
+      output: `interface InlineInterface { max: number }
+function* gen(opts: InlineInterface) { yield 1; }`,
       errors: ["noInlineInterfaces"],
     },
 
     // Arrow function in object property
     {
       code: `const obj = { method: (param: { x: number }) => param.x };`,
+      output: `interface InlineInterface { x: number }
+const obj = { method: (param: InlineInterface) => param.x };`,
       errors: ["noInlineInterfaces"],
     },
 
     // Arrow function in array
     {
       code: `const fns = [(x: { a: string }) => x.a];`,
+      output: `interface InlineInterface { a: string }
+const fns = [(x: InlineInterface) => x.a];`,
       errors: ["noInlineInterfaces"],
     },
 
     // IIFE with inline type
     {
       code: `((config: { debug: boolean }) => {})(true);`,
+      output: `interface InlineInterface { debug: boolean }
+((config: InlineInterface) => {})(true);`,
       errors: ["noInlineInterfaces"],
     },
 
     // Callback with inline type
     {
       code: `[].map((item: { id: string }) => item.id);`,
+      output: `interface InlineInterface { id: string }
+[].map((item: InlineInterface) => item.id);`,
       errors: ["noInlineInterfaces"],
     },
 
     // Default parameter with inline type
     {
       code: `function fn(opts: { x: number } = { x: 0 }) {}`,
+      output: `interface InlineInterface { x: number }
+function fn(opts: InlineInterface = { x: 0 }) {}`,
       errors: ["noInlineInterfaces"],
     },
   ],
@@ -483,6 +567,8 @@ async function process(): Promise<Result> { return { success: true }; }`,
     // Function with inline return type
     {
       code: `function f(): { a: string } { return { a: '' } }`,
+      output: `interface InlineInterface { a: string }
+function f(): InlineInterface { return { a: '' } }`,
       options: [{ checkReturnTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -490,6 +576,8 @@ async function process(): Promise<Result> { return { success: true }; }`,
     // Arrow function with inline return type
     {
       code: `const f = (): { a: string } => ({ a: '' })`,
+      output: `interface InlineInterface { a: string }
+const f = (): InlineInterface => ({ a: '' })`,
       options: [{ checkReturnTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -497,6 +585,8 @@ async function process(): Promise<Result> { return { success: true }; }`,
     // Function expression with inline return type
     {
       code: `const f = function(): { a: string } { return { a: '' } }`,
+      output: `interface InlineInterface { a: string }
+const f = function(): InlineInterface { return { a: '' } }`,
       options: [{ checkReturnTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -510,6 +600,8 @@ async function process(): Promise<Result> { return { success: true }; }`,
     // Method with inline return type (outside class)
     {
       code: `const obj = { getData(): { id: string } { return { id: '' }; } };`,
+      output: `interface InlineInterface { id: string }
+const obj = { getData(): InlineInterface { return { id: '' }; } };`,
       options: [{ checkReturnTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -564,6 +656,8 @@ const set: Set<Item> = new Set();`,
     // Array with inline object type in generic
     {
       code: `const x: Array<{ a: string }> = [];`,
+      output: `interface InlineInterface { a: string }
+const x: Array<InlineInterface> = [];`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -571,6 +665,8 @@ const set: Set<Item> = new Set();`,
     // Readonly with inline object type
     {
       code: `const x: Readonly<{ a: string }> = { a: '' };`,
+      output: `interface InlineInterface { a: string }
+const x: Readonly<InlineInterface> = { a: '' };`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -578,6 +674,8 @@ const set: Set<Item> = new Set();`,
     // Promise with inline object type
     {
       code: `const y: Promise<{ a: string }> = Promise.resolve({ a: '' });`,
+      output: `interface InlineInterface { a: string }
+const y: Promise<InlineInterface> = Promise.resolve({ a: '' });`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -585,6 +683,8 @@ const set: Set<Item> = new Set();`,
     // Partial with inline object type
     {
       code: `const y: Partial<{ a: string }> = {};`,
+      output: `interface InlineInterface { a: string }
+const y: Partial<InlineInterface> = {};`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -592,6 +692,8 @@ const set: Set<Item> = new Set();`,
     // Record with inline object type in value
     {
       code: `const x: Record<string, { a: string }> = {};`,
+      output: `interface InlineInterface { a: string }
+const x: Record<string, InlineInterface> = {};`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -599,6 +701,8 @@ const set: Set<Item> = new Set();`,
     // Map with inline object type
     {
       code: `const map: Map<string, { value: number }> = new Map();`,
+      output: `interface InlineInterface { value: number }
+const map: Map<string, InlineInterface> = new Map();`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -606,6 +710,8 @@ const set: Set<Item> = new Set();`,
     // Set with inline object type
     {
       code: `const set: Set<{ id: string }> = new Set();`,
+      output: `interface InlineInterface { id: string }
+const set: Set<InlineInterface> = new Set();`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -613,6 +719,8 @@ const set: Set<Item> = new Set();`,
     // WeakMap with inline object type
     {
       code: `const map: WeakMap<object, { data: string }> = new WeakMap();`,
+      output: `interface InlineInterface { data: string }
+const map: WeakMap<object, InlineInterface> = new WeakMap();`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -620,6 +728,8 @@ const set: Set<Item> = new Set();`,
     // Nested generics with inline types
     {
       code: `const nested: Promise<Array<{ item: string }>> = Promise.resolve([]);`,
+      output: `interface InlineInterface { item: string }
+const nested: Promise<Array<InlineInterface>> = Promise.resolve([]);`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -627,6 +737,9 @@ const set: Set<Item> = new Set();`,
     // Multiple inline types in generic
     {
       code: `const x: Map<{ key: string }, { value: number }> = new Map();`,
+      output: `interface InlineInterface { key: string }
+interface InlineInterface { value: number }
+const x: Map<InlineInterface, InlineInterface> = new Map();`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
@@ -634,6 +747,8 @@ const set: Set<Item> = new Set();`,
     // Required with inline object
     {
       code: `const x: Required<{ a?: string }> = { a: '' };`,
+      output: `interface InlineInterface { a?: string }
+const x: Required<InlineInterface> = { a: '' };`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -641,6 +756,8 @@ const set: Set<Item> = new Set();`,
     // NonNullable with inline object union
     {
       code: `const x: NonNullable<{ a: string } | null> = { a: '' };`,
+      output: `interface InlineInterface { a: string }
+const x: NonNullable<InlineInterface | null> = { a: '' };`,
       options: [{ checkGenericTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -677,6 +794,8 @@ function get(): A | B | null { return null; }`,
     // Requires BOTH options: checkReturnTypes to check returns, checkGenericTypes to look inside Promise<...>
     {
       code: `function getData(): Promise<{ data: string }> { return Promise.resolve({ data: '' }); }`,
+      output: `interface InlineInterface { data: string }
+function getData(): Promise<InlineInterface> { return Promise.resolve({ data: '' }); }`,
       options: [{ checkGenericTypes: true, checkReturnTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -685,6 +804,8 @@ function get(): A | B | null { return null; }`,
     // Requires BOTH options: checkReturnTypes to check returns, checkGenericTypes to look inside Promise<...>
     {
       code: `async function getUser(): Promise<{ id: string; name: string }> { return { id: '', name: '' }; }`,
+      output: `interface InlineInterface { id: string; name: string }
+async function getUser(): Promise<InlineInterface> { return { id: '', name: '' }; }`,
       options: [{ checkGenericTypes: true, checkReturnTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -692,6 +813,8 @@ function get(): A | B | null { return null; }`,
     // Generator return type with inline object in generic
     {
       code: `function* gen(): Generator<{ value: number }> { yield { value: 1 }; }`,
+      output: `interface InlineInterface { value: number }
+function* gen(): Generator<InlineInterface> { yield { value: 1 }; }`,
       options: [{ checkGenericTypes: true, checkReturnTypes: true }],
       errors: ["noInlineInterfaces"],
     },
@@ -699,6 +822,9 @@ function get(): A | B | null { return null; }`,
     // Return with union containing inline objects
     {
       code: `function get(): { a: string } | { b: number } { return { a: '' }; }`,
+      output: `interface InlineInterface { a: string }
+interface InlineInterface { b: number }
+function get(): InlineInterface | InlineInterface { return { a: '' }; }`,
       options: [{ checkGenericTypes: true, checkReturnTypes: true }],
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
@@ -706,6 +832,9 @@ function get(): A | B | null { return null; }`,
     // Parameter and return both with inline types
     {
       code: `function process(input: { x: number }): { result: number } { return { result: input.x * 2 }; }`,
+      output: `interface InlineInterface { x: number }
+interface InlineInterface { result: number }
+function process(input: InlineInterface): InlineInterface { return { result: input.x * 2 }; }`,
       options: [{ checkGenericTypes: true, checkReturnTypes: true }],
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
@@ -713,6 +842,9 @@ function get(): A | B | null { return null; }`,
     // Generic return with nested inline objects
     {
       code: `function getData(): Array<{ items: { id: string }[] }> { return []; }`,
+      output: `interface InlineInterface2 { id: string }
+interface InlineInterface { items: InlineInterface2[] }
+function getData(): Array<InlineInterface> { return []; }`,
       options: [{ checkGenericTypes: true, checkReturnTypes: true }],
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
