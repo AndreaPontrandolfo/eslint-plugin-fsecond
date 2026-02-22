@@ -338,8 +338,8 @@ function process(...items: InlineInterface[]) {}`,
     // Nested destructuring with inline type
     {
       code: `function fn({ user }: { user: { name: string } }) {}`,
-      output: `interface InlineInterface { name: string }
-interface InlineInterface { user: InlineInterface }
+      output: `interface InlineInterface2 { name: string }
+interface InlineInterface { user: InlineInterface2 }
 function fn({ user }: InlineInterface) {}`,
       errors: ["noInlineInterfaces", "noInlineInterfaces"],
     },
@@ -842,8 +842,8 @@ function process(input: InlineInterface): InlineInterface { return { result: inp
     // Generic return with nested inline objects
     {
       code: `function getData(): Array<{ items: { id: string }[] }> { return []; }`,
-      output: `interface InlineInterface { id: string }
-interface InlineInterface { items: InlineInterface[] }
+      output: `interface InlineInterface2 { id: string }
+interface InlineInterface { items: InlineInterface2[] }
 function getData(): Array<InlineInterface> { return []; }`,
       options: [{ checkGenericTypes: true, checkReturnTypes: true }],
       errors: ["noInlineInterfaces", "noInlineInterfaces"],

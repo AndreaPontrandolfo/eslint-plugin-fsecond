@@ -261,6 +261,7 @@ export default createEslintRule<Options, MessageIds>({
     const options = context.options[0] ?? {};
     const checkGenericTypes = options.checkGenericTypes ?? false;
     const checkReturnTypes = options.checkReturnTypes ?? false;
+    let interfaceCounter = 0;
 
     /**
      * Report all inline object type literals found in a type annotation.
@@ -271,6 +272,12 @@ export default createEslintRule<Options, MessageIds>({
       const literals = findTypeLiterals(typeAnnotation, [], checkGenericTypes);
 
       for (const literal of literals) {
+        interfaceCounter = interfaceCounter + 1;
+        const interfaceName =
+          interfaceCounter === 1
+            ? "InlineInterface"
+            : `InlineInterface${String(interfaceCounter)}`;
+
         context.report({
           node: literal,
           messageId: "noInlineInterfaces",
@@ -296,9 +303,9 @@ export default createEslintRule<Options, MessageIds>({
             return [
               fixer.insertTextBefore(
                 statementNode,
-                `interface InlineInterface {${bodyText}}\n`,
+                `interface ${interfaceName} {${bodyText}}\n`,
               ),
-              fixer.replaceText(literal, "InlineInterface"),
+              fixer.replaceText(literal, interfaceName),
             ];
           },
         });

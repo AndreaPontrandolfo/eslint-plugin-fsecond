@@ -5,7 +5,7 @@ ESLint plugin with some opinionated rules, useful in JavaScript, TypeScript and 
 ## Requirements
 
 - Node.js >=22
-- ESLint >=8.23.0
+- ESLint >=9.0.0
 
 ## Install
 
