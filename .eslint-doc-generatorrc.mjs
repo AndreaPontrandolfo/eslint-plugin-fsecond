@@ -7,12 +7,13 @@ const config = {
       parser: "markdown",
     });
   },
+  configEmoji: [["recommendedTypeChecked", "☑️"]],
   ruleListColumns: [
     "name",
     "description",
     "configsError",
-    "requiresTypeChecking",
     "options",
+    "requiresTypeChecking",
     "fixable",
     "hasSuggestions",
   ],
