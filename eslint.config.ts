@@ -15,7 +15,6 @@ const sheriffOptions: SheriffSettings = {
 };
 
 export default defineConfig(
-  // @ts-expect-error
   sheriff(sheriffOptions),
   eslintPlugin.configs["all-type-checked"],
   {
@@ -23,5 +22,5 @@ export default defineConfig(
       "@typescript-eslint/naming-convention": 0,
     },
   },
-  globalIgnores([".eslint-doc-generatorrc.js"]),
+  globalIgnores([".eslint-doc-generatorrc.mjs"]),
 );

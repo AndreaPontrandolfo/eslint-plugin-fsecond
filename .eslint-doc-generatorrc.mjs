@@ -1,5 +1,12 @@
-/** @type {import('eslint-doc-generator').GenerateOptions} */
+import prettier from "prettier";
+
 const config = {
+  postprocess: async (content, path) => {
+    return prettier.format(content, {
+      ...(await prettier.resolveConfig(path)),
+      parser: "markdown",
+    });
+  },
   ruleListColumns: [
     "name",
     "description",

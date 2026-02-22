@@ -4,7 +4,7 @@
     "src",
     "eslint.config.ts",
     "tsdown.config.ts",
-    "./.eslint-doc-generatorrc.js"
+    ".eslint-doc-generatorrc.mjs"
   ],
   "exclude": ["node_modules", "dist", "build", "coverage"],
   "compilerOptions": {
