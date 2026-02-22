@@ -67,7 +67,7 @@ export default [
 
 | Name                                                                         | Description                                                                                                            | 💼    | ⚙️  | 💭  | 🔧  |
 | :--------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- | :---- | :-- | :-- | :-- |
-| [no-inline-interfaces](docs/rules/no-inline-interfaces.md)                   | disallow inline object type literals in variable and function annotations; extract to a named interface or type alias. | ✅ ☑️ | ⚙️  |     |     |
+| [no-inline-interfaces](docs/rules/no-inline-interfaces.md)                   | disallow inline object type literals in variable and function annotations; extract to a named interface or type alias. | ✅ ☑️ | ⚙️  |     | 🔧  |
 | [no-redundant-jsx-prop-usage](docs/rules/no-redundant-jsx-prop-usage.md)     | disallow passing a JSX prop whose value matches the component's destructuring default for that prop                    | ☑️    |     | 💭  | 🔧  |
 | [prefer-destructured-optionals](docs/rules/prefer-destructured-optionals.md) | enforce placing optional parameters on a destructured object instead of the function signature itself                  | ✅ ☑️ |     |     |     |
 | [valid-event-listener](docs/rules/valid-event-listener.md)                   | enforces best practices around addEventListener method in React components.                                            | ✅ ☑️ | ⚙️  |     |     |
