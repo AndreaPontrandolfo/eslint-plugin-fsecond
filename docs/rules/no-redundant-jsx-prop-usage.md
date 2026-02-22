@@ -112,48 +112,6 @@ const x = <div className="foo" />;
 const y = <input type="text" />;
 ```
 
-## Configuration
-
-This rule requires typed linting. Add `parserOptions.project` or `parserOptions.projectService` to your ESLint config:
-
-```javascript
-// eslint.config.js
-import tseslint from "typescript-eslint";
-import fsecond from "eslint-plugin-fsecond";
-
-export default tseslint.config({
-  extends: [
-    ...tseslint.configs.recommended,
-    ...fsecond.configs.recommendedTypeChecked,
-  ],
-  languageOptions: {
-    parserOptions: {
-      projectService: true,
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
-
-Or enable the rule individually:
-
-```javascript
-// eslint.config.js
-export default [
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    rules: {
-      "fsecond/no-redundant-jsx-prop-usage": "error",
-    },
-  },
-];
-```
-
 ## Limitations
 
 - **Destructuring defaults only:** Defaults defined via `Comp.defaultProps` are not detected.
