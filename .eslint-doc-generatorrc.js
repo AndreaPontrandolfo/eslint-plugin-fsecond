@@ -4,7 +4,7 @@ const config = {
     "name",
     "description",
     "configsError",
-    "type",
+    "requiresTypeChecking",
     "options",
     "fixable",
     "hasSuggestions",

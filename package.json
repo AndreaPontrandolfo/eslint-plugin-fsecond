@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-fsecond",
-  "description": "ESLint plugin with misc rules.",
+  "description": "ESLint plugin with misc rules. Typescript and React related.",
   "license": "MIT",
   "version": "0.0.0-development",
   "type": "module",

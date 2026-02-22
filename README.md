@@ -1,8 +1,47 @@
 # ESLINT PLUGIN FSECOND
 
-## Description
-
 ESLint plugin with some opinionated rules, useful in JavaScript, TypeScript and React projects.
+
+## Requirements
+
+- Node.js >=22
+- ESLint >=8.23.0
+
+## Install
+
+```bash
+pnpm add -D eslint eslint-plugin-fsecond
+```
+
+## Usage
+
+Use a [preset config](#configs) or configure each rule separately.
+
+### With preset
+
+```ts
+// eslint.config.ts
+import fsecond from "eslint-plugin-fsecond";
+
+export default [fsecond.configs.recommended];
+```
+
+### With individual rules
+
+```ts
+// eslint.config.ts
+import fsecond from "eslint-plugin-fsecond";
+
+export default [
+  {
+    plugins: { fsecond: fsecond },
+    rules: {
+      // Override/add rules settings here, such as:
+      "fsecond/prefer-destructured-optionals": "error",
+    },
+  },
+];
+```
 
 ## Configs
 
