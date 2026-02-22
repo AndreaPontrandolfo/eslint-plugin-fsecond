@@ -1,14 +1,14 @@
+import packageJson from "../package.json";
 import noInlineInterfaces from "./rules/no-inline-interfaces";
 import noRedundantJsxPropUsage from "./rules/no-redundant-jsx-prop-usage";
 // import preferAliasedPath from "./rules/prefer-aliased-path";
 import preferDestructuredOptionals from "./rules/prefer-destructured-optionals";
 import validEventListener from "./rules/valid-event-listener";
 
+const eslintPluginShortName = "fsecond";
+
 const plugin = {
-  meta: {
-    name: "eslint-plugin-fsecond",
-    version: "2.0.0",
-  },
+  meta: { name: packageJson.name, version: packageJson.version },
   configs: {},
   rules: {
     "prefer-destructured-optionals": preferDestructuredOptionals,
@@ -19,17 +19,16 @@ const plugin = {
   },
 };
 
-// assign configs here so we can reference `plugin`
-Object.assign(plugin.configs, {
+const configs = {
   recommended: [
     {
       plugins: {
         fsecond: plugin,
       },
       rules: {
-        "fsecond/prefer-destructured-optionals": 2,
-        "fsecond/valid-event-listener": 2,
-        "fsecond/no-inline-interfaces": [
+        [`${eslintPluginShortName}/prefer-destructured-optionals`]: 2,
+        [`${eslintPluginShortName}/valid-event-listener`]: 2,
+        [`${eslintPluginShortName}/no-inline-interfaces`]: [
           2,
           { checkGenericTypes: false, checkReturnTypes: true },
         ],
@@ -42,16 +41,22 @@ Object.assign(plugin.configs, {
         fsecond: plugin,
       },
       rules: {
-        "fsecond/prefer-destructured-optionals": 2,
-        "fsecond/valid-event-listener": 2,
-        "fsecond/no-inline-interfaces": [
+        [`${eslintPluginShortName}/prefer-destructured-optionals`]: 2,
+        [`${eslintPluginShortName}/valid-event-listener`]: 2,
+        [`${eslintPluginShortName}/no-inline-interfaces`]: [
           2,
           { checkGenericTypes: false, checkReturnTypes: true },
         ],
-        "fsecond/no-redundant-jsx-prop-usage": 2,
+        [`${eslintPluginShortName}/no-redundant-jsx-prop-usage`]: 2,
       },
     },
   ],
-});
+};
 
-export default plugin;
+plugin.configs = configs;
+
+type Plugin = typeof plugin & {
+  configs: typeof configs;
+};
+
+export default plugin as Plugin;
