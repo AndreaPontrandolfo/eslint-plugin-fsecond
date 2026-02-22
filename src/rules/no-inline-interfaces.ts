@@ -5,6 +5,26 @@ import { createEslintRule } from "../utils";
 
 const RULE_NAME = "no-inline-interfaces";
 
+const STATEMENT_PARENT_TYPES = new Set([
+  AST_NODE_TYPES.Program,
+  AST_NODE_TYPES.BlockStatement,
+  AST_NODE_TYPES.TSModuleBlock,
+]);
+
+const findStatementAncestor = (node: TSESTree.Node): TSESTree.Node | null => {
+  let current: TSESTree.Node | undefined = node;
+
+  while (current.parent) {
+    if (STATEMENT_PARENT_TYPES.has(current.parent.type as AST_NODE_TYPES)) {
+      return current;
+    }
+
+    current = current.parent;
+  }
+
+  return null;
+};
+
 type MessageIds = "noInlineInterfaces";
 type Options = [
   {
@@ -201,6 +221,7 @@ export default createEslintRule<Options, MessageIds>({
       url: "https://github.com/AndreaPontrandolfo/eslint-plugin-fsecond/blob/master/docs/rules/no-inline-interfaces.md",
       recommended: true,
     },
+    fixable: "code",
     schema: [
       {
         type: "object",
@@ -250,7 +271,37 @@ export default createEslintRule<Options, MessageIds>({
       const literals = findTypeLiterals(typeAnnotation, [], checkGenericTypes);
 
       for (const literal of literals) {
-        context.report({ node: literal, messageId: "noInlineInterfaces" });
+        context.report({
+          node: literal,
+          messageId: "noInlineInterfaces",
+          fix(fixer) {
+            const statementNode = findStatementAncestor(literal);
+
+            if (!statementNode) {
+              return null;
+            }
+
+            const { sourceCode } = context;
+            const openBrace = sourceCode.getFirstToken(literal);
+            const closeBrace = sourceCode.getLastToken(literal);
+
+            if (!openBrace || !closeBrace) {
+              return null;
+            }
+
+            const bodyText = sourceCode
+              .getText()
+              .slice(openBrace.range[1], closeBrace.range[0]);
+
+            return [
+              fixer.insertTextBefore(
+                statementNode,
+                `interface InlineInterface {${bodyText}}\n`,
+              ),
+              fixer.replaceText(literal, "InlineInterface"),
+            ];
+          },
+        });
       }
     };
 
