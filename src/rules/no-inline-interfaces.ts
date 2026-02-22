@@ -326,7 +326,14 @@ export default createEslintRule<Options, MessageIds>({
         nodeToCheck = param.left;
       }
 
-      if ("typeAnnotation" in nodeToCheck && nodeToCheck.typeAnnotation) {
+      // Check for node types that can have type annotations
+      if (
+        (nodeToCheck.type === AST_NODE_TYPES.Identifier ||
+          nodeToCheck.type === AST_NODE_TYPES.ArrayPattern ||
+          nodeToCheck.type === AST_NODE_TYPES.ObjectPattern ||
+          nodeToCheck.type === AST_NODE_TYPES.RestElement) &&
+        nodeToCheck.typeAnnotation
+      ) {
         reportTypeAnnotation(nodeToCheck.typeAnnotation.typeAnnotation);
       }
     };
@@ -339,7 +346,7 @@ export default createEslintRule<Options, MessageIds>({
         }
 
         // Check variable type annotation
-        if ("typeAnnotation" in node.id && node.id.typeAnnotation) {
+        if (node.id.typeAnnotation) {
           reportTypeAnnotation(node.id.typeAnnotation.typeAnnotation);
         }
       },
